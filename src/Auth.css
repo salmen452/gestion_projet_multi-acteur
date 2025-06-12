@@ -1,0 +1,234 @@
+:root {
+  --primary: #0575E6;
+  --primary-dark: #021B79;
+  --primary-light: #ebf0ff;
+  --text: #2b2d42;
+  --text-light: #8d99ae;
+  --background: #f8f9fa;
+  --white: #ffffff;
+  --border: #e9ecef;
+  --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --transition: all 0.3s ease;
+}
+
+.auth-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.auth-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 8vw;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+}
+
+.auth-logo {
+  margin-bottom: 2rem;
+}
+
+.auth-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+  font-size: 1.1rem;
+  font-weight: 400;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+}
+
+.auth-desc {
+  font-size: 1rem;
+  margin-bottom: 2.5rem;
+  opacity: 0.95;
+}
+
+.auth-action-btn {
+  padding: 0.7rem 2rem;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: none;
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  transition: var(--transition);
+}
+.auth-action-btn:hover {
+  background: #fff;
+  color: var(--primary-dark);
+}
+
+.auth-link {
+  margin-top: 2rem;
+  font-size: 1rem;
+}
+.auth-link a {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.auth-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--white);
+}
+
+.auth-form-container {
+  width: 100%;
+  max-width: 400px;
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  padding: 2.5rem 2rem;
+  animation: fadeIn 0.5s ease;
+}
+
+.auth-form-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.auth-form-subtitle {
+  color: var(--text-light);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+.auth-form-group.with-icon {
+  position: relative;
+  margin-bottom: 1.2rem;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  font-size: 1.2rem;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 2.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: var(--white);
+  transition: var(--transition);
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.auth-password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 1.2rem;
+  transition: var(--transition);
+}
+.auth-password-toggle:hover {
+  color: var(--primary);
+}
+
+.auth-button {
+  width: 100%;
+  padding: 1rem;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: var(--transition);
+}
+.auth-button:hover {
+  background: var(--primary-dark);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 900px) {
+  .auth-container {
+    flex-direction: column;
+  }
+  .auth-left, .auth-right {
+    flex: none;
+    width: 100%;
+    padding: 2rem;
+  }
+  .auth-form-container {
+    box-shadow: none;
+    border-radius: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px);}
+  to { opacity: 1; transform: translateY(0);}
+} 
+/* Add this to your existing Auth.css file */
+
+/* Fix for input fields crossing container */
+.auth-form-container {
+    width: 100%;
+    max-width: 400px;
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    padding: 2.5rem 2rem;
+    animation: fadeIn 0.5s ease;
+    box-sizing: border-box; /* Add this line */
+  }
+  
+  .auth-input {
+    width: calc(100% - 3.8rem); /* Adjust width calculation */
+    padding: 0.85rem 1rem 0.85rem 2.8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--white);
+    transition: var(--transition);
+    box-sizing: border-box; /* Add this line */
+  }
+  
+  /* For password fields with toggle icon */
+  .auth-form-group.with-icon .auth-input {
+    width: calc(100% - 4.8rem); /* Slightly more space for toggle icon */
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 900px) {
+    .auth-form-container {
+      padding: 2rem 1.5rem;
+    }
+    
+    .auth-input {
+      width: calc(100% - 3.3rem);
+    }
+    
+    .auth-form-group.with-icon .auth-input {
+      width: calc(100% - 4.3rem);
+    }
+  }
