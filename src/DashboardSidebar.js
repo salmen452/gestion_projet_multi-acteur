@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom'; // Add this import
 import './Dashboard.css';
 import { FaHome, FaCalendarAlt, FaTasks, FaUsers, FaFileAlt, FaComments, FaBell, FaCog, FaQuestionCircle } from 'react-icons/fa';
 
@@ -11,35 +12,26 @@ const DashboardSidebar = () => {
       </div>
       
       <div className="nav-menu">
-        <div className="nav-item active">
+        <NavLink to="/dashboard" className="nav-item" activeClassName="active" exact>
           <FaHome className="nav-icon" />
           <span>Tableau de bord</span>
-        </div>
-        <div className="nav-item">
+        </NavLink>
+        <NavLink to="/meetings" className="nav-item" activeClassName="active">
           <FaCalendarAlt className="nav-icon" />
           <span>Réunions</span>
-        </div>
-        <div className="nav-item">
+        </NavLink>
+        <NavLink to="/actions" className="nav-item" activeClassName="active">
           <FaTasks className="nav-icon" />
           <span>Actions</span>
-        </div>
-        <div className="nav-item">
+        </NavLink>
+        <NavLink to="/workgroups" className="nav-item" activeClassName="active">
           <FaUsers className="nav-icon" />
           <span>Groupes de travail</span>
-        </div>
-        <div className="nav-item">
+        </NavLink>
+        <NavLink to="/documents" className="nav-item" activeClassName="active">
           <FaFileAlt className="nav-icon" />
           <span>Documents</span>
-        </div>
-        <div className="nav-divider"></div>
-        <div className="nav-item">
-          <FaComments className="nav-icon" />
-          <span>Discussions</span>
-        </div>
-        <div className="nav-item">
-          <FaBell className="nav-icon" />
-          <span>Notifications</span>
-        </div>
+        </NavLink>
         <div className="nav-divider"></div>
         <div className="nav-item">
           <FaCog className="nav-icon" />
