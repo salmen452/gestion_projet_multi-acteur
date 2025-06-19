@@ -13,7 +13,6 @@ const DashboardHeader = () => {
         <div className="user-profile">
           <div className="user-avatar">US</div>
           <div>User</div>
-          <span className="chevron">▼</span>
         </div>
       </div>
     </header>

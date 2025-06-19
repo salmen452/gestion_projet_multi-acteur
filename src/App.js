@@ -12,6 +12,15 @@ import WorkgroupsPage from './WorkgroupsPage'; // Add this
 import DocumentsPage from './DocumentsPage'; // Add this
 import './App.css';
 
+const GroupDetail = () => {
+  return (
+    <div style={{padding: '2rem'}}>
+      <h2>Détail du groupe</h2>
+      <p>Page de détail du groupe à venir...</p>
+    </div>
+  );
+};
+
 function App() {
   return (
     <Router>
@@ -37,6 +46,7 @@ function App() {
         <Route path="/meetings" element={<MeetingsPage />} />
         <Route path="/actions" element={<ActionsPage />} />
         <Route path="/workgroups" element={<WorkgroupsPage />} />
+        <Route path="/workgroups/:id" element={<GroupDetail />} />
         <Route path="/documents" element={<DocumentsPage />} />
       </Routes>
     </Router>

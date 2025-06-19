@@ -1,9 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'; // Add this import
 import './Dashboard.css';
-import { FaHome, FaCalendarAlt, FaTasks, FaUsers, FaFileAlt, FaComments, FaBell, FaCog, FaQuestionCircle } from 'react-icons/fa';
+import { FaHome, FaCalendarAlt, FaTasks, FaUsers, FaFileAlt, FaCog, FaQuestionCircle } from 'react-icons/fa';
 
-const DashboardSidebar = () => {
+const DashboardSidebar = ({ onParametreClick }) => {
   return (
     <nav className="dashboard-sidebar">
       <div className="logo-area">
@@ -33,7 +33,7 @@ const DashboardSidebar = () => {
           <span>Documents</span>
         </NavLink>
         <div className="nav-divider"></div>
-        <div className="nav-item">
+        <div className="nav-item" style={{cursor: 'pointer'}} onClick={onParametreClick}>
           <FaCog className="nav-icon" />
           <span>Paramètres</span>
         </div>
