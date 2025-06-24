@@ -24,10 +24,6 @@ const DashboardSidebar = ({ onParametreClick }) => {
           <FaTasks className="nav-icon" />
           <span>Actions</span>
         </NavLink>
-        <NavLink to="/workgroups" className="nav-item" activeClassName="active">
-          <FaUsers className="nav-icon" />
-          <span>Groupes de travail</span>
-        </NavLink>
         <NavLink to="/documents" className="nav-item" activeClassName="active">
           <FaFileAlt className="nav-icon" />
           <span>Documents</span>

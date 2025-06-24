@@ -719,3 +719,20 @@
   background: var(--primary);
   color: white;
 }
+
+/* Meeting Card Animations */
+.meeting-card:hover {
+  box-shadow: 0 8px 32px rgba(30,32,38,0.13);
+  transform: translateY(-4px) scale(1.012);
+}
+
+.meeting-detail-btn:hover,
+.meeting-action-btn:hover {
+  background: #d1d9f6;
+  transform: scale(1.06);
+}
+
+.meeting-action-btn:active,
+.meeting-detail-btn:active {
+  transform: scale(0.98);
+}

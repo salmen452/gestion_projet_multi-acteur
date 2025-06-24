@@ -1,16 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DashboardHeader from './DashboardHeader';
 import DashboardSidebar from './DashboardSidebar';
 import StatsOverview from './components/StatsOverview';
 import UpcomingMeetings from './components/UpcomingMeetings';
 import ActionItems from './components/ActionItems';
 import RecentActivity from './components/RecentActivity';
-import WorkGroups from './components/WorkGroups';
 import './Dashboard.css';
 import { FaUsers, FaCalendarCheck, FaTasks, FaFileContract } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
+import SettingsContainer from './SettingsContainer';
+import ActionsChart from './components/ActionsChart';
+import DocumentsChart from './components/DocumentsChart';
+import DocumentsPage from './DocumentsPage';
 
 const Dashboard = () => {
+  const [showSettings, setShowSettings] = useState(false);
+
   // Stats data
   const statsData = [
     {
@@ -145,34 +150,25 @@ const Dashboard = () => {
     }
   ];
 
-  // Work groups data
-  const workGroupsData = [
+  // Documents data
+  const [documents] = useState([
     {
-      name: "Environnement et développement durable",
-      members: 12,
-      color: '#6d5dfc'
+      id: 1,
+      name: 'CR Atelier Aménagement Urbain',
+      file: 'charte_eau_v2.1.pdf',
+      type: 'Compte-rendu',
+      date: '18 juin 2025',
     },
-    {
-      name: "Éducation et formation",
-      members: 8,
-      color: '#4CAF50'
-    },
-    {
-      name: "Infrastructures urbaines",
-      members: 10,
-      color: '#FFC107'
-    },
-    {
-      name: "Santé et protection sociale",
-      members: 7,
-      color: '#F44336'
-    }
-  ];
+    // Ajoutez d'autres documents ici si besoin
+  ]);
 
   return (
     <div className="dashboard-container">
       <DashboardHeader />
-      <DashboardSidebar />
+      <DashboardSidebar onParametreClick={() => setShowSettings(true)} />
+      {showSettings && (
+        <SettingsContainer onClose={() => setShowSettings(false)} />
+      )}
       
       <main className="dashboard-main">
         <StatsOverview stats={statsData} />
@@ -180,8 +176,16 @@ const Dashboard = () => {
         <div className="dashboard-grid">
           <UpcomingMeetings meetings={meetingsData} />
           <ActionItems actions={actionsData} />
-          <RecentActivity activities={activitiesData} />
-          <WorkGroups groups={workGroupsData} />
+        </div>
+        <div style={{display: 'flex', gap: 32, flexWrap: 'wrap', justifyContent: 'center', marginTop: 40}}>
+          <div style={{background: '#fff', borderRadius: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', padding: 24, maxWidth: 400, minWidth: 320}}>
+            <h3 style={{textAlign: 'center', marginBottom: 18}}>Répartition des Actions</h3>
+            <ActionsChart actions={actionsData} />
+          </div>
+          <div style={{background: '#fff', borderRadius: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', padding: 24, maxWidth: 400, minWidth: 320}}>
+            <h3 style={{textAlign: 'center', marginBottom: 18}}>Répartition des Documents</h3>
+            <DocumentsChart documents={documents} />
+          </div>
         </div>
       </main>
     </div>

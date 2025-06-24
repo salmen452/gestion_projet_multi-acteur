@@ -78,6 +78,22 @@ const ActionsPage = () => {
     setForm({ title: '', description: '', priority: 'Moyenne', dueDate: '' });
   };
 
+  const handleTerminer = (id) => {
+    setActions(actions =>
+      actions.map(action =>
+        action.id === id ? { ...action, status: 'Terminées' } : action
+      )
+    );
+  };
+
+  const handleCommencer = (id) => {
+    setActions(actions =>
+      actions.map(action =>
+        action.id === id ? { ...action, status: 'En cours' } : action
+      )
+    );
+  };
+
   return (
     <div className="dashboard-container">
       <DashboardHeader />
@@ -177,10 +193,50 @@ const ActionsPage = () => {
             </div>
           ) : (
             filteredActions.map(action => (
-              <div key={action.id} style={{background: '#faf9fb', border: '1.5px solid #e0e0e0', borderRadius: 16, padding: '1.2rem 1.5rem', marginBottom: 18, boxShadow: 'none', display: 'flex', flexDirection: 'column', gap: 8}}>
-                <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
-                  <FaInfoCircle style={{marginRight: 8, color: '#444'}} />
-                  <span style={{fontWeight: 700, fontSize: 20}}>{action.title}</span>
+              <div key={action.id} style={{background: '#faf9fb', border: '1.5px solid #e0e0e0', borderRadius: 16, padding: '1.2rem 1.5rem', marginBottom: 18, boxShadow: 'none', display: 'flex', flexDirection: 'column', gap: 8, position: 'relative'}}>
+                <div style={{display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'space-between'}}>
+                  <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
+                    <FaInfoCircle style={{marginRight: 8, color: '#444'}} />
+                    <span style={{fontWeight: 700, fontSize: 20}}>{action.title}</span>
+                  </div>
+                  <div>
+                    {action.status === 'À faire' && (
+                      <button
+                        style={{
+                          background: '#1976d2',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: 16,
+                          padding: '0.5rem 1.5rem',
+                          fontWeight: 600,
+                          fontSize: 16,
+                          cursor: 'pointer',
+                          marginLeft: 12
+                        }}
+                        onClick={() => handleCommencer(action.id)}
+                      >
+                        Commencer
+                      </button>
+                    )}
+                    {action.status === 'En cours' && (
+                      <button
+                        style={{
+                          background: '#ffa726',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: 16,
+                          padding: '0.5rem 1.5rem',
+                          fontWeight: 600,
+                          fontSize: 16,
+                          cursor: 'pointer',
+                          marginLeft: 12
+                        }}
+                        onClick={() => handleTerminer(action.id)}
+                      >
+                        Terminer
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div style={{color: '#8d99ae', fontSize: 16, marginLeft: 28}}>{action.description}</div>
                 <div style={{display: 'flex', alignItems: 'center', gap: 16, marginLeft: 28, marginTop: 4}}>
