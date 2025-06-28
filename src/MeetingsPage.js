@@ -25,6 +25,14 @@ const initialMeetings = [
   }
 ];
 
+const usersList = [
+  { id: 1, name: 'Alice Dupont', type: 'Membre' },
+  { id: 2, name: 'Bob Martin', type: 'Membre' },
+  { id: 3, name: 'Carla Guest', type: 'Invité' },
+  { id: 4, name: 'David Leroy', type: 'Membre' },
+  { id: 5, name: 'Eva Guest', type: 'Invité' },
+];
+
 const MeetingsPage = () => {
   const [meetings, setMeetings] = useState(initialMeetings);
   const [showModal, setShowModal] = useState(false);
@@ -41,12 +49,14 @@ const MeetingsPage = () => {
   const [documentsInput, setDocumentsInput] = useState({ name: '', type: '' });
   const [agenda, setAgenda] = useState([]);
   const [documents, setDocuments] = useState([]);
+  const [participants, setParticipants] = useState([]);
 
   const handleOpenModal = () => {
     setEditMeeting(null);
     setForm({ title: '', description: '', date: '', duration: '', type: 'Virtuel' });
     setAgenda([]);
     setDocuments([]);
+    setParticipants([]);
     setShowModal(true);
   };
   const handleCloseModal = () => setShowModal(false);
@@ -63,7 +73,7 @@ const MeetingsPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editMeeting) {
-      setMeetings((prev) => prev.map((m) => m.id === editMeeting.id ? { ...m, ...form, date: form.date, agenda, documents } : m));
+      setMeetings((prev) => prev.map((m) => m.id === editMeeting.id ? { ...m, ...form, date: form.date, agenda, documents, participants } : m));
     } else {
       setMeetings((prev) => [
         ...prev,
@@ -75,6 +85,7 @@ const MeetingsPage = () => {
           type: form.type,
           agenda,
           documents,
+          participants,
           location: '',
           time: '',
         },
@@ -100,6 +111,7 @@ const MeetingsPage = () => {
     });
     setAgenda(meeting.agenda || []);
     setDocuments(meeting.documents || []);
+    setParticipants(meeting.participants || []);
     setShowModal(true);
   };
 
@@ -252,6 +264,24 @@ const MeetingsPage = () => {
                       </ul>
                     </div>
                   </div>
+                  {/* Participants section */}
+                  <div style={{marginTop: '2rem'}}>
+                    <div style={{fontWeight: 600, marginBottom: 8}}>Participants</div>
+                    <ul style={{margin: 0, paddingLeft: 18}}>
+                      {(selectedMeeting.participants || []).length === 0 ? (
+                        <li style={{color: '#8d99ae'}}>Aucun participant</li>
+                      ) : (
+                        (selectedMeeting.participants || []).map((name, idx) => {
+                          const user = usersList.find(u => u.name === name);
+                          return (
+                            <li key={idx} style={{marginBottom: 4}}>
+                              {name} {user ? <span style={{color: '#8d99ae', fontSize: 13}}>({user.type})</span> : null}
+                            </li>
+                          );
+                        })
+                      )}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -328,6 +358,27 @@ const MeetingsPage = () => {
                     <option>Virtuel</option>
                     <option>Présentiel</option>
                   </select>
+                </div>
+                <div style={{marginBottom: 16}}>
+                  <label style={{fontWeight: 500, fontSize: 15}}>Participants</label>
+                  <select
+                    multiple
+                    value={participants}
+                    onChange={e => {
+                      const selected = Array.from(e.target.selectedOptions, option => option.value);
+                      setParticipants(selected);
+                    }}
+                    style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16, marginTop: 4, minHeight: 80}}
+                  >
+                    {usersList.map(user => (
+                      <option key={user.id} value={user.name}>
+                        {user.name} ({user.type})
+                      </option>
+                    ))}
+                  </select>
+                  <div style={{fontSize: 13, color: '#8d99ae', marginTop: 4}}>
+                    Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs participants
+                  </div>
                 </div>
                 <button type="submit" style={{background: '#11192f', color: '#fff', fontWeight: 600, fontSize: 16, borderRadius: 8, padding: '0.7rem 1.5rem', border: 'none', marginTop: 8, float: 'right', cursor: 'pointer'}}>{editMeeting ? 'Enregistrer' : 'Créer la réunion'}</button>
               </form>
