@@ -12,7 +12,11 @@ mongoose.connect(process.env.MONGO_URI, {
 // Example Express server
 const express = require('express');
 const app = express();
+const authRoutes = require('./auth');
 const PORT = process.env.PORT || 5000;
+
+app.use(express.json()); // Add this to parse JSON bodies
+app.use('/api', authRoutes); // Mount the signup route
 
 app.get('/', (req, res) => {
   res.send('Backend is running and connected to MongoDB!');
