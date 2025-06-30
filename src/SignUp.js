@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import './Auth.css';
 import { ReactComponent as Logo } from './logo.svg';
 import { MdEmail, MdPerson, MdPhone, MdLock, MdVisibility, MdVisibilityOff } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [form, setForm] = useState({
@@ -41,8 +43,8 @@ const SignUp = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        setMessage('Registration successful! You can now log in.');
-        setForm({ email: '', name: '', phone: '', password: '', confirmPassword: '' });
+        setMessage('Registration successful! Redirecting...');
+        setTimeout(() => navigate('/dashboard'), 1200);
       } else {
         setMessage(data.message || 'Registration failed');
       }
