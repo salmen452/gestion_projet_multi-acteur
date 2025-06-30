@@ -5,6 +5,35 @@ import { MdEmail, MdLock, MdVisibility, MdVisibilityOff } from 'react-icons/md';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.message || "Login failed");
+      } else {
+        // Store user info in localStorage (or context)
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.location.href = "/dashboard"; // Redirect on success
+      }
+    } catch (err) {
+      setError("Network error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="auth-container">
@@ -20,7 +49,7 @@ const Login = () => {
         </div>
       </div>
       <div className="auth-right">
-        <form className="auth-form-container">
+        <form className="auth-form-container" onSubmit={handleSubmit}>
           <h2 className="auth-form-title">Hello Again!</h2>
           <p className="auth-form-subtitle">Welcome Back</p>
           
@@ -31,6 +60,8 @@ const Login = () => {
               type="email"
               placeholder="Enter Email"
               required
+              value={email}
+              onChange={e => setEmail(e.target.value)}
             />
           </div>
           
@@ -41,6 +72,8 @@ const Login = () => {
               type={showPassword ? 'text' : 'password'}
               placeholder="Password"
               required
+              value={password}
+              onChange={e => setPassword(e.target.value)}
             />
             <span
               className="auth-password-toggle"
@@ -52,9 +85,9 @@ const Login = () => {
               {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
             </span>
           </div>
-          
-          <button className="auth-button" type="submit">
-            Login
+          {error && <div className="auth-error">{error}</div>}
+          <button className="auth-button" type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>

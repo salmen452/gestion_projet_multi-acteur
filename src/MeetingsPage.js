@@ -1,40 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardHeader from './DashboardHeader';
 import DashboardSidebar from './DashboardSidebar';
 import './Dashboard.css';
 
-const initialMeetings = [
-  {
-    id: 1,
-    title: 'Réunion technique infrastructures',
-    description: "Finaliser le rapport d'évaluation",
-    date: '10 juin 2025',
-    type: 'Virtuel',
-    agenda: [
-      'Revue des objectifs du projet',
-      "Point sur l’avancement des travaux",
-      'Discussion des obstacles rencontrés',
-      'Planification des prochaines étapes'
-    ],
-    documents: [
-      { name: 'Ordre du jour', type: 'PDF' },
-      { name: 'Rapport d’avancement', type: 'Excel' }
-    ],
-    location: 'Salle A',
-    time: '10:00 - 12:00'
-  }
-];
-
-const usersList = [
-  { id: 1, name: 'Alice Dupont', type: 'Membre' },
-  { id: 2, name: 'Bob Martin', type: 'Membre' },
-  { id: 3, name: 'Carla Guest', type: 'Invité' },
-  { id: 4, name: 'David Leroy', type: 'Membre' },
-  { id: 5, name: 'Eva Guest', type: 'Invité' },
-];
-
 const MeetingsPage = () => {
-  const [meetings, setMeetings] = useState(initialMeetings);
+  const [meetings, setMeetings] = useState([]);
+  const [usersList, setUsersList] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState(null);
   const [editMeeting, setEditMeeting] = useState(null); // For editing
@@ -50,6 +21,18 @@ const MeetingsPage = () => {
   const [agenda, setAgenda] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [participants, setParticipants] = useState([]);
+
+  // Fetch meetings and users from backend
+  useEffect(() => {
+    fetch('/api/meetings')
+      .then(res => res.json())
+      .then(data => setMeetings(data))
+      .catch(() => setMeetings([]));
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(data => setUsersList(data))
+      .catch(() => setUsersList([]));
+  }, []);
 
   const handleOpenModal = () => {
     setEditMeeting(null);
@@ -69,34 +52,45 @@ const MeetingsPage = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle create or edit
-  const handleSubmit = (e) => {
+  // Create or update meeting
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const meetingData = {
+      ...form,
+      agenda,
+      documents,
+      participants,
+      location: '',
+      time: '',
+    };
     if (editMeeting) {
-      setMeetings((prev) => prev.map((m) => m.id === editMeeting.id ? { ...m, ...form, date: form.date, agenda, documents, participants } : m));
+      // Update
+      await fetch(`/api/meetings/${editMeeting._id || editMeeting.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(meetingData),
+      });
     } else {
-      setMeetings((prev) => [
-        ...prev,
-        {
-          id: Date.now(),
-          title: form.title,
-          description: form.description,
-          date: form.date,
-          type: form.type,
-          agenda,
-          documents,
-          participants,
-          location: '',
-          time: '',
-        },
-      ]);
+      // Create
+      await fetch('/api/meetings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(meetingData),
+      });
     }
+    // Refresh meetings
+    fetch('/api/meetings')
+      .then(res => res.json())
+      .then(data => setMeetings(data));
     setShowModal(false);
   };
 
-  // Handle delete
-  const handleDelete = (id) => {
-    setMeetings((prev) => prev.filter((m) => m.id !== id));
+  // Delete meeting
+  const handleDelete = async (id) => {
+    await fetch(`/api/meetings/${id}`, { method: 'DELETE' });
+    fetch('/api/meetings')
+      .then(res => res.json())
+      .then(data => setMeetings(data));
   };
 
   // Handle edit
@@ -192,7 +186,7 @@ const MeetingsPage = () => {
         {/* Meeting Detail Modal */}
         {selectedMeeting && (
           <div style={{position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(30,32,38,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-            <div style={{background: '#fff', borderRadius: 10, boxShadow: '0 4px 32px rgba(0,0,0,0.18)', padding: '2rem', minWidth: 420, maxWidth: 900, width: '60vw', position: 'relative'}}>
+            <div style={{background: '#fff', borderRadius: 10, boxShadow: '0 4px 32px rgba(0,0,0,0.18)', padding: '2rem', minWidth: 420, maxWidth: 900, width: '60vw', position: 'relative', maxHeight: '80vh', overflow: 'auto'}}>
               <button onClick={handleCloseDetail} style={{position: 'absolute', top: 18, right: 18, background: 'none', border: 'none', fontSize: 22, color: '#222', cursor: 'pointer'}}>×</button>
               <div style={{display: 'flex', gap: '2rem', alignItems: 'flex-start'}}>
                 <div style={{minWidth: 80, textAlign: 'center', background: '#f8f9fa', borderRadius: 12, padding: '1rem 0'}}>
@@ -290,94 +284,94 @@ const MeetingsPage = () => {
         {/* New Meeting Modal */}
         {showModal && (
           <div style={{position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(30,32,38,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-            <div style={{background: '#fff', borderRadius: 10, boxShadow: '0 4px 32px rgba(0,0,0,0.18)', padding: '2rem', minWidth: 420, maxWidth: 540, width: '100%', position: 'relative'}}>
+            <div style={{background: '#fff', borderRadius: 10, boxShadow: '0 4px 32px rgba(0,0,0,0.18)', padding: '2rem', minWidth: 420, maxWidth: 540, width: '100%', position: 'relative', maxHeight: '80vh', overflow: 'auto'}}>
               <button onClick={handleCloseModal} style={{position: 'absolute', top: 18, right: 18, background: 'none', border: 'none', fontSize: 22, color: '#222', cursor: 'pointer'}}>×</button>
               <h3 style={{marginTop: 0, marginBottom: 18, fontWeight: 600, fontSize: 22}}>{editMeeting ? 'Modifier la réunion' : 'Créer une nouvelle réunion'}</h3>
               <form onSubmit={handleSubmit}>
-                <div style={{marginBottom: 16}}>
-                  <label style={{fontWeight: 500, fontSize: 15}}>Titre de la réunion</label>
-                  <input type="text" name="title" value={form.title} onChange={handleFormChange} required style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #222', fontSize: 16, marginTop: 4}} />
-                </div>
-                <div style={{marginBottom: 16}}>
-                  <label style={{fontWeight: 500, fontSize: 15}}>Description</label>
-                  <textarea name="description" value={form.description} onChange={handleFormChange} rows={3} style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16, marginTop: 4}} />
-                </div>
-                <div style={{marginBottom: 16}}>
-                  <label style={{fontWeight: 500, fontSize: 15}}>Ordre du jour</label>
-                  <div style={{display: 'flex', gap: 8, marginBottom: 8}}>
-                    <input value={agendaInput} onChange={e => setAgendaInput(e.target.value)} placeholder="Ajouter un point" style={{flex: 1, padding: '0.5rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 15}} />
-                    <button onClick={handleAddAgenda} style={{background: '#6d5dfc', color: '#fff', border: 'none', borderRadius: 6, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, cursor: 'pointer'}}>Ajouter</button>
+                <div style={{display: 'flex', flexDirection: 'column', gap: 16}}>
+                  <div style={{display: 'flex', gap: 16, flexWrap: 'wrap'}}>
+                    <div style={{flex: 1, minWidth: 180}}>
+                      <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Titre de la réunion</label>
+                      <input type="text" name="title" value={form.title} onChange={handleFormChange} required style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #222', fontSize: 16}} />
+                    </div>
+                    <div style={{flex: 1, minWidth: 180}}>
+                      <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Date</label>
+                      <input type="date" name="date" value={form.date} onChange={handleFormChange} required style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16}} />
+                    </div>
                   </div>
-                  <ul style={{margin: 0, paddingLeft: 18}}>
-                    {agenda.map((item, idx) => (
-                      <li key={idx} style={{marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8}}>
-                        {item}
-                        <button type="button" onClick={() => handleRemoveAgenda(idx)} style={{background: 'none', border: 'none', color: '#F44336', fontWeight: 700, cursor: 'pointer'}}>×</button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div style={{marginBottom: 16}}>
-                  <label style={{fontWeight: 500, fontSize: 15}}>Documents attachés</label>
-                  <div style={{display: 'flex', gap: 8, marginBottom: 8}}>
-                    <input
-                      type="file"
+                  <div style={{display: 'flex', gap: 16, flexWrap: 'wrap'}}>
+                    <div style={{flex: 1, minWidth: 180}}>
+                      <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Durée (minutes)</label>
+                      <input type="number" name="duration" value={form.duration} onChange={handleFormChange} style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16}} />
+                    </div>
+                    <div style={{flex: 1, minWidth: 180}}>
+                      <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Type de réunion</label>
+                      <select name="type" value={form.type} onChange={handleFormChange} style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16}}>
+                        <option>Virtuel</option>
+                        <option>Présentiel</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
+                    <label style={{fontWeight: 500, fontSize: 15}}>Participants</label>
+                    <select
+                      multiple
+                      value={participants}
                       onChange={e => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          setDocuments([...documents, { name: file.name, type: file.type || 'Fichier', file }]);
-                        }
-                        // Reset input so same file can be selected again if needed
-                        e.target.value = '';
+                        const selected = Array.from(e.target.selectedOptions, option => option.value);
+                        setParticipants(selected);
                       }}
-                      style={{flex: 1, padding: '0.5rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 15}}
-                    />
+                      style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16, minHeight: 80}}
+                    >
+                      {usersList.map(user => (
+                        <option key={user.id} value={user.name}>
+                          {user.name} ({user.type})
+                        </option>
+                      ))}
+                    </select>
+                    <div style={{fontSize: 13, color: '#8d99ae'}}>
+                      Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs participants
+                    </div>
                   </div>
-                  <ul style={{margin: 0, paddingLeft: 18}}>
-                    {documents.map((doc, idx) => (
-                      <li key={idx} style={{marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8}}>
-                        {doc.name} <span style={{color: '#8d99ae', fontSize: 13}}>{doc.type || 'Fichier'}</span>
-                        <button type="button" onClick={() => handleRemoveDocument(idx)} style={{background: 'none', border: 'none', color: '#F44336', fontWeight: 700, cursor: 'pointer'}}>×</button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div style={{display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap'}}>
-                  <div style={{flex: 1, minWidth: 180}}>
-                    <label style={{fontWeight: 500, fontSize: 15}}>Date</label>
-                    <input type="date" name="date" value={form.date} onChange={handleFormChange} required style={{width: '100%', minWidth: 120, padding: '0.3rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16, marginTop: 4}} />
+                  <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
+                    <label style={{fontWeight: 500, fontSize: 15}}>Ordre du jour</label>
+                    <div style={{display: 'flex', gap: 8}}>
+                      <input value={agendaInput} onChange={e => setAgendaInput(e.target.value)} placeholder="Ajouter un point" style={{flex: 1, padding: '0.5rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 15}} />
+                      <button onClick={handleAddAgenda} style={{background: '#6d5dfc', color: '#fff', border: 'none', borderRadius: 6, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, cursor: 'pointer'}}>Ajouter</button>
+                    </div>
+                    <ul style={{margin: 0, paddingLeft: 18}}>
+                      {agenda.map((item, idx) => (
+                        <li key={idx} style={{marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8}}>
+                          {item}
+                          <button type="button" onClick={() => handleRemoveAgenda(idx)} style={{background: 'none', border: 'none', color: '#F44336', fontWeight: 700, cursor: 'pointer'}}>×</button>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div style={{flex: 1, minWidth: 180}}>
-                    <label style={{fontWeight: 500, fontSize: 15}}>Durée (minutes)</label>
-                    <input type="number" name="duration" value={form.duration} onChange={handleFormChange} style={{width: '100%', minWidth: 120, padding: '0.4rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16, marginTop: 4}} />
-                  </div>
-                </div>
-                <div style={{marginBottom: 16}}>
-                  <label style={{fontWeight: 500, fontSize: 15}}>Type de réunion</label>
-                  <select name="type" value={form.type} onChange={handleFormChange} style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16, marginTop: 4}}>
-                    <option>Virtuel</option>
-                    <option>Présentiel</option>
-                  </select>
-                </div>
-                <div style={{marginBottom: 16}}>
-                  <label style={{fontWeight: 500, fontSize: 15}}>Participants</label>
-                  <select
-                    multiple
-                    value={participants}
-                    onChange={e => {
-                      const selected = Array.from(e.target.selectedOptions, option => option.value);
-                      setParticipants(selected);
-                    }}
-                    style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16, marginTop: 4, minHeight: 80}}
-                  >
-                    {usersList.map(user => (
-                      <option key={user.id} value={user.name}>
-                        {user.name} ({user.type})
-                      </option>
-                    ))}
-                  </select>
-                  <div style={{fontSize: 13, color: '#8d99ae', marginTop: 4}}>
-                    Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs participants
+                  <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
+                    <label style={{fontWeight: 500, fontSize: 15}}>Documents attachés</label>
+                    <div style={{display: 'flex', gap: 8}}>
+                      <input
+                        type="file"
+                        onChange={e => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setDocuments([...documents, { name: file.name, type: file.type || 'Fichier', file }]);
+                          }
+                          // Reset input so same file can be selected again if needed
+                          e.target.value = '';
+                        }}
+                        style={{flex: 1, padding: '0.5rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 15}}
+                      />
+                    </div>
+                    <ul style={{margin: 0, paddingLeft: 18}}>
+                      {documents.map((doc, idx) => (
+                        <li key={idx} style={{marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8}}>
+                          {doc.name} <span style={{color: '#8d99ae', fontSize: 13}}>{doc.type || 'Fichier'}</span>
+                          <button type="button" onClick={() => handleRemoveDocument(idx)} style={{background: 'none', border: 'none', color: '#F44336', fontWeight: 700, cursor: 'pointer'}}>×</button>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
                 <button type="submit" style={{background: '#11192f', color: '#fff', fontWeight: 600, fontSize: 16, borderRadius: 8, padding: '0.7rem 1.5rem', border: 'none', marginTop: 8, float: 'right', cursor: 'pointer'}}>{editMeeting ? 'Enregistrer' : 'Créer la réunion'}</button>
