@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('./models/User');
+const Meeting = require('./models/Meeting');
 
 const router = express.Router();
 
@@ -56,6 +57,65 @@ router.post('/login', async (req, res) => {
 // Test route to verify router
 router.get('/test', (req, res) => {
   res.json({ message: 'Auth router is working!' });
+});
+
+// Get all users (for participants list)
+router.get('/Users', async (req, res) => {
+  try {
+    const users = await User.find({}, '-password'); // Exclude password field
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Get all meetings (for meetings list)
+router.get('/Meetings', async (req, res) => {
+  try {
+    const meetings = await Meeting.find({});
+    res.json(meetings);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Create a new meeting
+router.post('/Meetings', async (req, res) => {
+  try {
+    const meeting = new Meeting(req.body);
+    await meeting.save();
+    res.status(201).json(meeting);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Delete a meeting by ID
+router.delete('/Meetings/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Meeting.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: 'Meeting not found.' });
+    }
+    res.json({ message: 'Meeting deleted.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Update a meeting by ID
+router.put('/Meetings/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await Meeting.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).json({ message: 'Meeting not found.' });
+    }
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
 });
 
 module.exports = router;
