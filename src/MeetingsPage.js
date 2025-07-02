@@ -17,10 +17,9 @@ const MeetingsPage = () => {
     type: 'Virtuel',
   });
   const [agendaInput, setAgendaInput] = useState('');
-  const [documentsInput, setDocumentsInput] = useState({ name: '', type: '' });
   const [agenda, setAgenda] = useState([]);
-  const [documents, setDocuments] = useState([]);
   const [participants, setParticipants] = useState([]);
+  // ...existing code...
 
   // Fetch meetings and users from backend
   useEffect(() => {
@@ -30,7 +29,10 @@ const MeetingsPage = () => {
       .catch(() => setMeetings([]));
     fetch('http://localhost:5000/api/Users')
       .then(res => res.json())
-      .then(data => setUsersList(data))
+      .then(data => {
+        console.log('Fetched users:', data);
+        setUsersList(data);
+      })
       .catch(() => setUsersList([]));
   }, []);
 
@@ -38,7 +40,6 @@ const MeetingsPage = () => {
     setEditMeeting(null);
     setForm({ title: '', description: '', date: '', duration: '', type: 'Virtuel' });
     setAgenda([]);
-    setDocuments([]);
     setParticipants([]);
     setShowModal(true);
   };
@@ -55,29 +56,23 @@ const MeetingsPage = () => {
   // Create or update meeting
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // No documents, send as JSON
     const meetingData = {
       ...form,
       agenda,
-      documents,
       participants,
       location: '',
       time: '',
     };
-    if (editMeeting) {
-      // Update
-      await fetch(`http://localhost:5000/api/Meetings/${editMeeting._id || editMeeting.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(meetingData),
-      });
-    } else {
-      // Create
-      await fetch('http://localhost:5000/api/Meetings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(meetingData),
-      });
-    }
+    const url = editMeeting
+      ? `http://localhost:5000/api/Meetings/${editMeeting._id || editMeeting.id}`
+      : 'http://localhost:5000/api/Meetings';
+    const method = editMeeting ? 'PUT' : 'POST';
+    await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(meetingData),
+    });
     // Refresh meetings
     fetch('http://localhost:5000/api/Meetings')
       .then(res => res.json())
@@ -104,7 +99,6 @@ const MeetingsPage = () => {
       type: meeting.type,
     });
     setAgenda(meeting.agenda || []);
-    setDocuments(meeting.documents || []);
     setParticipants(meeting.participants || []);
     setShowModal(true);
   };
@@ -122,16 +116,7 @@ const MeetingsPage = () => {
   };
 
   // Documents handlers
-  const handleAddDocument = (e) => {
-    e.preventDefault();
-    if (documentsInput.name.trim() && documentsInput.type.trim()) {
-      setDocuments([...documents, { ...documentsInput }]);
-      setDocumentsInput({ name: '', type: '' });
-    }
-  };
-  const handleRemoveDocument = (idx) => {
-    setDocuments(documents.filter((_, i) => i !== idx));
-  };
+  // ...existing code...
 
   return (
     <div className="dashboard-container">
@@ -229,32 +214,7 @@ const MeetingsPage = () => {
                         ))}
                       </ul>
                     </div>
-                    <div>
-                      <div style={{fontWeight: 600, marginBottom: 8}}>Documents attachés</div>
-                      <ul style={{margin: 0, paddingLeft: 18}}>
-                        {selectedMeeting.documents.map((doc, idx) => {
-                          if (doc.file) {
-                            const url = URL.createObjectURL(doc.file);
-                            return (
-                              <li key={idx} style={{marginBottom: 4}}>
-                                <a href={url} download={doc.name} style={{color: '#11192f', textDecoration: 'underline', cursor: 'pointer'}} onClick={e => {
-                                  setTimeout(() => URL.revokeObjectURL(url), 1000);
-                                }}>
-                                  {doc.name}
-                                </a>
-                                <span style={{color: '#8d99ae', fontSize: 13, marginLeft: 6}}>{doc.type || 'Fichier'}</span>
-                              </li>
-                            );
-                          } else {
-                            return (
-                              <li key={idx} style={{marginBottom: 4}}>
-                                {doc.name} <span style={{color: '#8d99ae', fontSize: 13}}>{doc.type}</span>
-                              </li>
-                            );
-                          }
-                        })}
-                      </ul>
-                    </div>
+                    {/* Documents section removed to prevent map on undefined */}
                   </div>
                   <div style={{marginTop: '2rem'}}>
                     <div style={{fontWeight: 600, marginBottom: 8}}>Participants</div>
@@ -320,11 +280,15 @@ const MeetingsPage = () => {
                     }}
                     style={{width: '100%', padding: '0.7rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, minHeight: 80, background: '#f8f9fa'}}
                   >
-                    {usersList.map(user => (
-                      <option key={user.id} value={user.name}>
-                        {user.name} ({user.type})
-                      </option>
-                    ))}
+                    {usersList.map(user => {
+                      // Support both 'name' and 'nom' fields for user display
+                      const displayName = user.name || user.nom || user.email || 'Utilisateur inconnu';
+                      return (
+                        <option key={user.id || user._id || user.email} value={displayName}>
+                          {displayName}
+                        </option>
+                      );
+                    })}
                   </select>
                   <div style={{fontSize: 13, color: '#8d99ae'}}>
                     Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs participants
@@ -345,30 +309,7 @@ const MeetingsPage = () => {
                     ))}
                   </ul>
                 </div>
-                <div style={{display: 'flex', flexDirection: 'column', gap: 8}}>
-                  <label style={{fontWeight: 500, fontSize: 15}}>Documents attachés</label>
-                  <div style={{display: 'flex', gap: 8}}>
-                    <input
-                      type="file"
-                      onChange={e => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          setDocuments([...documents, { name: file.name, type: file.type || 'Fichier', file }]);
-                        }
-                        e.target.value = '';
-                      }}
-                      style={{flex: 1, padding: '0.6rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 15, background: '#f8f9fa'}}
-                    />
-                  </div>
-                  <ul style={{margin: 0, paddingLeft: 18}}>
-                    {documents.map((doc, idx) => (
-                      <li key={idx} style={{marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8}}>
-                        {doc.name} <span style={{color: '#8d99ae', fontSize: 13}}>{doc.type || 'Fichier'}</span>
-                        <button type="button" onClick={() => handleRemoveDocument(idx)} style={{background: 'none', border: 'none', color: '#F44336', fontWeight: 700, cursor: 'pointer', fontSize: 18, lineHeight: 1}}>×</button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {/* Documents attachés section removed as requested */}
                 <button type="submit" style={{background: '#11192f', color: '#fff', fontWeight: 700, fontSize: 17, borderRadius: 8, padding: '0.9rem 0', border: 'none', marginTop: 10, width: '100%', cursor: 'pointer', boxShadow: '0 2px 8px rgba(17,25,47,0.08)'}}>{editMeeting ? 'Enregistrer' : 'Créer la réunion'}</button>
               </form>
             </div>

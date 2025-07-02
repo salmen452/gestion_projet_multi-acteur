@@ -1,19 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardHeader from './DashboardHeader';
 import DashboardSidebar from './DashboardSidebar';
 import './Dashboard.css';
 import { FaUpload, FaCalendarAlt, FaFileAlt, FaTrash, FaDownload } from 'react-icons/fa';
 
-const initialDocuments = [
-  // Example:
-   {
-     id: 1,
-    name: 'CR Atelier Aménagement Urbain',
-     file: 'charte_eau_v2.1.pdf',
-     type: 'Compte-rendu',
-     date: '18 juin 2025',
-   },
-];
+
+const API_URL = 'http://localhost:5000/api/documents';
 
 const docTypes = [
   { key: 'Ordre du jour', label: 'Ordre du jour' },
@@ -33,60 +25,84 @@ const typeColors = {
   'Autre': '#FFC107',
 };
 
+
 const DocumentsPage = () => {
-  const [documents, setDocuments] = useState(initialDocuments);
+  const [documents, setDocuments] = useState([]);
   const [filter, setFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
     name: '',
-    file: '',
+    file: null, // store the File object
     type: docTypes[0].key,
     date: new Date().toISOString().slice(0, 10),
   });
+
+  // Fetch documents from backend
+  useEffect(() => {
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => setDocuments(data))
+      .catch(() => setDocuments([]));
+  }, []);
 
   const filteredDocs = filter === 'all' ? documents : documents.filter(d => d.type === filter);
 
   // Count for summary card
   const totalDocs = documents.length;
 
-  const handleDelete = (id) => {
-    setDocuments(documents.filter(d => d.id !== id));
+
+  // Delete document in backend
+  const handleDelete = async (id) => {
+    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+    setDocuments(documents.filter(d => d._id !== id));
   };
+
 
   const handleFormChange = (e) => {
     const { name, value, files } = e.target;
-    setForm(f => ({ ...f, [name]: files ? files[0].name : value }));
+    if (files) {
+      setForm(f => ({ ...f, [name]: files[0] })); // store the File object
+    } else {
+      setForm(f => ({ ...f, [name]: value }));
+    }
   };
 
-  const handleUpload = (e) => {
+
+  // Upload (create) document in backend
+  const handleUpload = async (e) => {
     e.preventDefault();
-    setDocuments([
-      ...documents,
-      {
-        id: documents.length + 1,
-        name: form.name,
-        file: form.file,
-        type: form.type,
-        date: form.date.split('-').reverse().join(' '),
-      },
-    ]);
+    const formData = new FormData();
+    formData.append('name', form.name);
+    formData.append('file', form.file); // actual file object
+    formData.append('type', form.type);
+    formData.append('date', form.date);
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      body: formData,
+    });
+    const savedDoc = await res.json();
+    setDocuments([...documents, savedDoc]);
     setShowModal(false);
-    setForm({ name: '', file: '', type: docTypes[0].key, date: new Date().toISOString().slice(0, 10) });
+    setForm({ name: '', file: null, type: docTypes[0].key, date: new Date().toISOString().slice(0, 10) });
   };
 
-  // Helper to download a dummy file if not present
-  const handleDownload = (doc) => {
-    // If you have a real file URL, use it here. Otherwise, create a dummy file.
-    const content = `Ceci est un fichier factice pour ${doc.name}`;
-    const blob = new Blob([content], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = doc.file || 'document.pdf';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  // Download the actual file from backend
+  const handleDownload = async (doc) => {
+    try {
+      const res = await fetch(`${API_URL}/${doc._id || doc.id}`);
+      if (!res.ok) throw new Error('Erreur lors du téléchargement');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = doc.fileName || doc.file || doc.name || 'document';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Erreur lors du téléchargement du fichier.');
+    }
   };
 
   return (
@@ -191,9 +207,11 @@ const DocumentsPage = () => {
         ) : (
           <div style={{display: 'flex', gap: 18, flexWrap: 'wrap'}}>
             {filteredDocs.map(doc => (
-              <div key={doc.id} style={{background: '#fff', border: '1.5px solid #e0e0e0', borderRadius: 16, padding: '1.2rem 1.5rem', minWidth: 280, maxWidth: 340, flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: 8, position: 'relative'}}>
+              <div key={doc._id || doc.id} style={{background: '#fff', border: '1.5px solid #e0e0e0', borderRadius: 16, padding: '1.2rem 1.5rem', minWidth: 280, maxWidth: 340, flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: 8, position: 'relative'}}>
                 <div style={{fontWeight: 700, fontSize: 18, marginBottom: 2}}>{doc.name}</div>
-                <div style={{color: '#8d99ae', fontSize: 15, marginBottom: 2}}>Fichier: {doc.file}</div>
+                <div style={{color: '#8d99ae', fontSize: 15, marginBottom: 2}}>
+                  Fichier: {doc.fileName || (typeof doc.file === 'string' ? doc.file : doc.name) || 'Document'}
+                </div>
                 <div style={{display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2}}>
                   <FaCalendarAlt style={{color: '#444'}} />
                   <span style={{fontSize: 14}}>Ajouté le: {doc.date}</span>
@@ -205,7 +223,7 @@ const DocumentsPage = () => {
                   <button onClick={() => handleDownload(doc)} style={{background: '#43b36a', color: '#fff', borderRadius: 8, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, border: 'none', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer'}}>
                     <FaDownload /> Télécharger
                   </button>
-                  <button onClick={() => handleDelete(doc.id)} style={{background: '#e53935', color: '#fff', borderRadius: 8, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, border: 'none', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer'}}>
+                  <button onClick={() => handleDelete(doc._id || doc.id)} style={{background: '#e53935', color: '#fff', borderRadius: 8, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, border: 'none', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer'}}>
                     <FaTrash />
                   </button>
                 </div>
