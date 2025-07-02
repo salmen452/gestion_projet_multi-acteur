@@ -1,9 +1,141 @@
+// ...existing code...
+
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const User = require('./models/User');
-const Meeting = require('./models/Meeting');
+const multer = require('multer');
+const upload = multer();
 
 const router = express.Router();
+const Document = require('./models/Document');
+const User = require('./models/User');
+const Meeting = require('./models/Meeting');
+const Action = require('./models/Action');
+// --- DOCUMENTS CRUD ---
+// Get all documents
+router.get('/documents', async (req, res) => {
+  try {
+    const documents = await Document.find({});
+    res.json(documents);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Create a new document with file upload
+router.post('/documents', upload.single('file'), async (req, res) => {
+  try {
+    const { name, type, date } = req.body;
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ message: 'File is required.' });
+    }
+    const document = new Document({
+      name,
+      type,
+      date,
+      file: file.buffer,
+      fileType: file.mimetype,
+      fileName: file.originalname
+    });
+    await document.save();
+    res.status(201).json(document);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Update a document by ID (PATCH)
+router.patch('/documents/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await Document.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).json({ message: 'Document not found.' });
+    }
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Delete a document by ID
+router.delete('/documents/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Document.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: 'Document not found.' });
+    }
+    res.json({ message: 'Document deleted.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+// Download a document file by ID
+router.get('/documents/:id', async (req, res) => {
+  try {
+    const doc = await Document.findById(req.params.id);
+    if (!doc) return res.status(404).json({ message: 'Document not found.' });
+    res.set({
+      'Content-Type': doc.fileType || 'application/octet-stream',
+      'Content-Disposition': `attachment; filename="${doc.fileName || doc.name || 'document'}"`
+    });
+    res.send(doc.file);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+// ...existing code...
+// --- ACTIONS CRUD ---
+// Get all actions
+router.get('/actions', async (req, res) => {
+  try {
+    const actions = await Action.find({});
+    res.json(actions);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Create a new action
+router.post('/actions', async (req, res) => {
+  try {
+    const action = new Action(req.body);
+    await action.save();
+    res.status(201).json(action);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Update an action by ID (PATCH)
+router.patch('/actions/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await Action.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updated) {
+      return res.status(404).json({ message: 'Action not found.' });
+    }
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Delete an action by ID
+router.delete('/actions/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Action.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: 'Action not found.' });
+    }
+    res.json({ message: 'Action deleted.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
 
 // Signup route
 router.post('/signup', async (req, res) => {
@@ -79,17 +211,6 @@ router.get('/Meetings', async (req, res) => {
   }
 });
 
-// Create a new meeting
-router.post('/Meetings', async (req, res) => {
-  try {
-    const meeting = new Meeting(req.body);
-    await meeting.save();
-    res.status(201).json(meeting);
-  } catch (err) {
-    res.status(500).json({ message: err.message || 'Server error.' });
-  }
-});
-
 // Delete a meeting by ID
 router.delete('/Meetings/:id', async (req, res) => {
   try {
@@ -104,11 +225,77 @@ router.delete('/Meetings/:id', async (req, res) => {
   }
 });
 
-// Update a meeting by ID
-router.put('/Meetings/:id', async (req, res) => {
+// Use multer().any() for meetings file upload
+const meetingsUpload = multer().any();
+
+// Helper to parse documents from req.files and req.body
+function parseMeetingDocuments(req) {
+  // For single document
+  let name = req.body['document[name]'] || '';
+  let type = req.body['document[type]'] || '';
+  let fileObj = (req.files || []).find(f => f.fieldname === 'document[file]');
+  return {
+    name,
+    type,
+    file: fileObj ? fileObj.buffer : undefined,
+    fileType: fileObj ? fileObj.mimetype : undefined,
+    fileName: fileObj ? fileObj.originalname : undefined,
+  };
+}
+
+// Create a new meeting (with file upload)
+router.post('/Meetings', meetingsUpload, async (req, res) => {
   try {
-    const { id } = req.params;
-    const updated = await Meeting.findByIdAndUpdate(id, req.body, { new: true });
+    console.log('FILES:', req.files);
+    console.log('BODY:', req.body);
+    let document = parseMeetingDocuments(req);
+    // Only include document if at least one property is present
+    const meetingData = {
+      title: req.body.title,
+      description: req.body.description,
+      date: req.body.date,
+      duration: req.body.duration,
+      type: req.body.type,
+      location: req.body.location,
+      time: req.body.time,
+      agenda: Array.isArray(req.body.agenda) ? req.body.agenda : (req.body.agenda ? [req.body.agenda] : []),
+      participants: Array.isArray(req.body.participants) ? req.body.participants : (req.body.participants ? [req.body.participants] : [])
+    };
+    // Only add document if it has at least one property (name, type, or file)
+    if (document && (document.name || document.type || document.file)) {
+      meetingData.document = document;
+    }
+    const meeting = new Meeting(meetingData);
+    await meeting.save();
+    res.status(201).json(meeting);
+  } catch (err) {
+    console.error('MEETING CREATE ERROR:', err);
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Update a meeting by ID (with file upload)
+router.put('/Meetings/:id', meetingsUpload, async (req, res) => {
+  try {
+    let document = parseMeetingDocuments(req);
+    const update = {
+      title: req.body.title,
+      description: req.body.description,
+      date: req.body.date,
+      duration: req.body.duration,
+      type: req.body.type,
+      location: req.body.location,
+      time: req.body.time,
+      agenda: Array.isArray(req.body.agenda) ? req.body.agenda : (req.body.agenda ? [req.body.agenda] : []),
+      participants: Array.isArray(req.body.participants) ? req.body.participants : (req.body.participants ? [req.body.participants] : [])
+    };
+    // Only add document if it has at least one property (name, type, or file)
+    if (document && (document.name || document.type || document.file)) {
+      update.document = document;
+    } else {
+      update.document = undefined;
+    }
+    const updated = await Meeting.findByIdAndUpdate(req.params.id, update, { new: true });
     if (!updated) {
       return res.status(404).json({ message: 'Meeting not found.' });
     }
@@ -119,3 +306,23 @@ router.put('/Meetings/:id', async (req, res) => {
 });
 
 module.exports = router;
+// Download a meeting's document by meeting ID
+router.get('/Meetings/:id/document', async (req, res) => {
+  try {
+    const meeting = await Meeting.findById(req.params.id);
+    if (!meeting) {
+      return res.status(404).json({ message: 'Meeting not found.' });
+    }
+    const doc = meeting.document;
+    if (!doc || !doc.file) {
+      return res.status(404).json({ message: 'No document found for this meeting.' });
+    }
+    res.set({
+      'Content-Type': doc.fileType || 'application/octet-stream',
+      'Content-Disposition': `attachment; filename="${doc.fileName || doc.name || 'document'}"`
+    });
+    res.send(doc.file);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});

@@ -1,20 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardHeader from './DashboardHeader';
 import DashboardSidebar from './DashboardSidebar';
 import './Dashboard.css';
 import { FaPlus, FaCalendarAlt, FaInfoCircle } from 'react-icons/fa';
 
-const initialActions = [
-  {
-    id: 1,
-    title: "Finaliser le rapport d'évaluation environnementale",
-    description: "Finaliser le rapport d'évaluation",
-    dueDate: "10 juin 2025",
-    priority: "Moyenne",
-    status: "En cours"
-  },
-  // Add more actions as needed
-];
+
+const API_URL = 'http://localhost:5000/api/actions';
 
 const statusList = [
   { key: 'all', label: 'Toutes' },
@@ -35,8 +26,9 @@ const priorityColors = {
   'Basse': '#ffd600',
 };
 
+
 const ActionsPage = () => {
-  const [actions, setActions] = useState(initialActions);
+  const [actions, setActions] = useState([]);
   const [filter, setFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
@@ -45,6 +37,14 @@ const ActionsPage = () => {
     priority: 'Moyenne',
     dueDate: '',
   });
+
+  // Fetch actions from backend
+  useEffect(() => {
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => setActions(data))
+      .catch(() => setActions([]));
+  }, []);
 
   const filteredActions = filter === 'all' ? actions : actions.filter(a => a.status === filter);
 
@@ -61,37 +61,48 @@ const ActionsPage = () => {
     setForm(f => ({ ...f, [name]: value }));
   };
 
-  const handleCreateAction = (e) => {
+
+  // Create new action in backend
+  const handleCreateAction = async (e) => {
     e.preventDefault();
-    setActions([
-      ...actions,
-      {
-        id: actions.length + 1,
-        title: form.title,
-        description: form.description,
-        dueDate: form.dueDate,
-        priority: form.priority,
-        status: 'À faire',
-      }
-    ]);
+    const newAction = {
+      title: form.title,
+      description: form.description,
+      dueDate: form.dueDate,
+      priority: form.priority,
+      status: 'À faire',
+    };
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newAction),
+    });
+    const savedAction = await res.json();
+    setActions([...actions, savedAction]);
     setShowModal(false);
     setForm({ title: '', description: '', priority: 'Moyenne', dueDate: '' });
   };
 
-  const handleTerminer = (id) => {
-    setActions(actions =>
-      actions.map(action =>
-        action.id === id ? { ...action, status: 'Terminées' } : action
-      )
-    );
+
+  // Update action status in backend
+  const handleTerminer = async (id) => {
+    const res = await fetch(`${API_URL}/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'Terminées' }),
+    });
+    const updated = await res.json();
+    setActions(actions => actions.map(a => (a._id === id ? updated : a)));
   };
 
-  const handleCommencer = (id) => {
-    setActions(actions =>
-      actions.map(action =>
-        action.id === id ? { ...action, status: 'En cours' } : action
-      )
-    );
+  const handleCommencer = async (id) => {
+    const res = await fetch(`${API_URL}/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'En cours' }),
+    });
+    const updated = await res.json();
+    setActions(actions => actions.map(a => (a._id === id ? updated : a)));
   };
 
   return (
@@ -193,7 +204,7 @@ const ActionsPage = () => {
             </div>
           ) : (
             filteredActions.map(action => (
-              <div key={action.id} style={{background: '#faf9fb', border: '1.5px solid #e0e0e0', borderRadius: 16, padding: '1.2rem 1.5rem', marginBottom: 18, boxShadow: 'none', display: 'flex', flexDirection: 'column', gap: 8, position: 'relative'}}>
+              <div key={action._id || action.id} style={{background: '#faf9fb', border: '1.5px solid #e0e0e0', borderRadius: 16, padding: '1.2rem 1.5rem', marginBottom: 18, boxShadow: 'none', display: 'flex', flexDirection: 'column', gap: 8, position: 'relative'}}>
                 <div style={{display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'space-between'}}>
                   <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
                     <FaInfoCircle style={{marginRight: 8, color: '#444'}} />
@@ -213,7 +224,7 @@ const ActionsPage = () => {
                           cursor: 'pointer',
                           marginLeft: 12
                         }}
-                        onClick={() => handleCommencer(action.id)}
+                        onClick={() => handleCommencer(action._id || action.id)}
                       >
                         Commencer
                       </button>
@@ -231,7 +242,7 @@ const ActionsPage = () => {
                           cursor: 'pointer',
                           marginLeft: 12
                         }}
-                        onClick={() => handleTerminer(action.id)}
+                        onClick={() => handleTerminer(action._id || action.id)}
                       >
                         Terminer
                       </button>
