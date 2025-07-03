@@ -254,12 +254,22 @@ const MeetingsPage = () => {
                     <input type="text" name="title" value={form.title} onChange={handleFormChange} required style={{width: '100%', padding: '0.7rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, background: '#f8f9fa'}} />
                   </div>
                   <div style={{width: '100%'}}>
-                    <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Durée (minutes)</label>
-                    <input type="number" name="duration" value={form.duration} onChange={handleFormChange} style={{width: '100%', padding: '0.7rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, background: '#f8f9fa'}} />
+                    <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Description</label>
+                    <textarea name="description" value={form.description} onChange={handleFormChange} required rows={3} style={{width: '100%', padding: '0.7rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, background: '#f8f9fa', resize: 'vertical'}} />
+                  </div>
+                  <div style={{width: '100%', display: 'flex', gap: 12}}>
+                    <div style={{flex: 1}}>
+                      <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Date</label>
+                      <input type="date" name="date" value={form.date} onChange={handleFormChange} required style={{width: '100%', padding: '0.7rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, background: '#f8f9fa'}} />
+                    </div>
+                    <div style={{flex: 1}}>
+                      <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Heure de début</label>
+                      <input type="time" name="time" value={form.time || ''} onChange={handleFormChange} required style={{width: '100%', padding: '0.6rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, background: '#f8f9fa',marginLeft:14}} />
+                    </div>
                   </div>
                   <div style={{width: '100%'}}>
-                    <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Date</label>
-                    <input type="date" name="date" value={form.date} onChange={handleFormChange} required style={{width: '100%', padding: '0.7rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, background: '#f8f9fa'}} />
+                    <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Durée (minutes)</label>
+                    <input type="number" name="duration" value={form.duration} onChange={handleFormChange} style={{width: '100%', padding: '0.7rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, background: '#f8f9fa'}} />
                   </div>
                   <div style={{width: '100%'}}>
                     <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Type de réunion</label>
@@ -309,7 +319,6 @@ const MeetingsPage = () => {
                     ))}
                   </ul>
                 </div>
-                {/* Documents attachés section removed as requested */}
                 <button type="submit" style={{background: '#11192f', color: '#fff', fontWeight: 700, fontSize: 17, borderRadius: 8, padding: '0.9rem 0', border: 'none', marginTop: 10, width: '100%', cursor: 'pointer', boxShadow: '0 2px 8px rgba(17,25,47,0.08)'}}>{editMeeting ? 'Enregistrer' : 'Créer la réunion'}</button>
               </form>
             </div>
