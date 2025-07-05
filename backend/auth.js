@@ -1,36 +1,4 @@
-// Create a new user (admin only)
-router.post('/Users', async (req, res) => {
-  try {
-    const { email, name, phone, organisation, password, role } = req.body;
-    if (!email || !name || !phone || !password) {
-      return res.status(400).json({ message: 'All fields are required.' });
-    }
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({ message: 'User already exists.' });
-    }
-    const hashedPassword = await require('bcryptjs').hash(password, 10);
-    const user = new User({ email, name, phone, organisation, password: hashedPassword, role });
-    await user.save();
-    res.status(201).json({ message: 'User created successfully.', user });
-  } catch (err) {
-    res.status(500).json({ message: err.message || 'Server error.' });
-  }
-});
 
-// Delete a user by ID (admin only)
-router.delete('/Users/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleted = await User.findByIdAndDelete(id);
-    if (!deleted) {
-      return res.status(404).json({ message: 'User not found.' });
-    }
-    res.json({ message: 'User deleted.' });
-  } catch (err) {
-    res.status(500).json({ message: err.message || 'Server error.' });
-  }
-});
 // ...existing code...
 
 const express = require('express');
@@ -379,6 +347,39 @@ router.patch('/Users/:id', async (req, res) => {
       return res.status(404).json({ message: 'User not found.' });
     }
     res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+// Create a new user (admin only)
+router.post('/Users', async (req, res) => {
+  try {
+    const { email, name, phone, organisation, password, role } = req.body;
+    if (!email || !name || !phone || !password) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: 'User already exists.' });
+    }
+    const hashedPassword = await require('bcryptjs').hash(password, 10);
+    const user = new User({ email, name, phone, organisation, password: hashedPassword, role });
+    await user.save();
+    res.status(201).json({ message: 'User created successfully.', user });
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Delete a user by ID (admin only)
+router.delete('/Users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await User.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    res.json({ message: 'User deleted.' });
   } catch (err) {
     res.status(500).json({ message: err.message || 'Server error.' });
   }

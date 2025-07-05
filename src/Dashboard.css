@@ -630,11 +630,6 @@
   background: var(--primary);
 }
 
-.nav-icon {
-  font-size: 1.1rem;
-  width: 24px;
-  text-align: center;
-}
 
 .nav-divider {
   height: 1px;
@@ -670,9 +665,7 @@
 }
 
 /* Ensure icons are white */
-.nav-icon {
-  color: white !important;
-}
+
 
 /* Make notification badge text white */
 .notification-badge {
@@ -776,4 +769,25 @@
 .meeting-action-btn:active,
 .meeting-detail-btn:active {
   transform: scale(0.98);
+}
+/* Improved icon visibility */
+.nav-icon {
+  font-size: 1.2rem !important;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3)) !important;
+  transition: all 0.2s ease !important;
+}
+
+.nav-item:hover .nav-icon {
+  transform: scale(1.1) !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)) !important;
+}
+
+.nav-item.active .nav-icon {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7)) !important;
+}
+
+/* Make icons slightly larger */
+.nav-menu .nav-icon {
+  min-width: 24px;
+  text-align: center;
 }
