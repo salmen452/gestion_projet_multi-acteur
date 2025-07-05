@@ -6,13 +6,6 @@ const meetingSchema = new mongoose.Schema({
   date: { type: String, required: true },
   type: { type: String, required: true },
   agenda: [{ type: String }],
-  document: {
-    name: String,
-    type: String,
-    file: Buffer,
-    fileType: String,
-    fileName: String
-  },
   location: { type: String },
   time: { type: String },
   duration: { type: String },

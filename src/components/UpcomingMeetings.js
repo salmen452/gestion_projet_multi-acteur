@@ -17,8 +17,7 @@ const UpcomingMeetings = ({ meetings }) => {
         {meetings.map((meeting, index) => (
           <div key={index} className="meeting-item">
             <div className="meeting-date">
-              <div className="meeting-day">{meeting.date}</div>
-              <div className="meeting-month">{meeting.month}</div>
+              <div className="meeting-day" style={{fontWeight:600, fontSize:18}}>{meeting.date}</div>
             </div>
             <div className="meeting-details">
               <div className="meeting-title">{meeting.title}</div>
@@ -28,7 +27,7 @@ const UpcomingMeetings = ({ meetings }) => {
               </div>
               <div className="meeting-participants">
                 {meeting.participants.map((participant, idx) => (
-                  <span key={idx} className="participant-avatar">
+                  <span key={idx} className="participant-avatar" style={{background:'#e3eaff',color:'#1a237e',fontWeight:500,fontSize:13,padding:'2px 10px',borderRadius:12,marginRight:4}}>
                     {participant.avatar}
                   </span>
                 ))}

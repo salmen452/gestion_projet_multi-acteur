@@ -24,8 +24,11 @@ const Login = () => {
       if (!res.ok) {
         setError(data.message || "Login failed");
       } else {
-        // Store user info in localStorage (or context)
+        // Store user info and JWT token in localStorage
         localStorage.setItem("user", JSON.stringify(data.user));
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
         window.location.href = "/dashboard"; // Redirect on success
       }
     } catch (err) {

@@ -10,7 +10,8 @@ const SignUp = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [form, setForm] = useState({
     email: '',
-    name: '',
+    prenom: '',
+    nom: '',
     phone: '',
     password: '',
     confirmPassword: '',
@@ -20,7 +21,7 @@ const SignUp = () => {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,15 +37,37 @@ const SignUp = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: form.email,
-          name: form.name,
+          name: form.prenom + ' ' + form.nom,
           phone: form.phone,
           password: form.password,
         }),
       });
       const data = await res.json();
       if (res.ok) {
-        setMessage('Registration successful! Redirecting...');
-        setTimeout(() => navigate('/dashboard'), 1200);
+        // Auto-login after successful signup
+        setMessage('Registration successful! Logging you in...');
+        // Try to login with the same credentials
+        try {
+          const loginRes = await fetch('http://localhost:5000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: form.email, password: form.password })
+          });
+          const loginData = await loginRes.json();
+          if (loginRes.ok) {
+            localStorage.setItem('user', JSON.stringify(loginData.user));
+            if (loginData.token) {
+              localStorage.setItem('token', loginData.token);
+            }
+            setTimeout(() => navigate('/dashboard'), 800);
+          } else {
+            setMessage('Registered, but failed to log in. Please log in manually.');
+            setTimeout(() => navigate('/login'), 1200);
+          }
+        } catch (err) {
+          setMessage('Registered, but failed to log in. Please log in manually.');
+          setTimeout(() => navigate('/login'), 1200);
+        }
       } else {
         setMessage(data.message || 'Registration failed');
       }
@@ -92,9 +115,21 @@ const SignUp = () => {
             <input
               className="auth-input"
               type="text"
-              name="name"
-              placeholder="Full Name"
-              value={form.name}
+              name="prenom"
+              placeholder="Prénom"
+              value={form.prenom}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="auth-form-group with-icon">
+            <MdPerson className="input-icon" />
+            <input
+              className="auth-input"
+              type="text"
+              name="nom"
+              placeholder="Nom"
+              value={form.nom}
               onChange={handleChange}
               required
             />

@@ -15,61 +15,145 @@ import DocumentsPage from './DocumentsPage';
 
 const Dashboard = () => {
   const [showSettings, setShowSettings] = useState(false);
-  const [statsData, setStatsData] = useState([
-    { icon: <FaUsers />, title: "Acteurs impliqués", value: "-", trend: 0 },
-    { icon: <FaCalendarCheck />, title: "Réunions ce mois", value: "-", trend: 0 },
-    { icon: <FaTasks />, title: "Actions en cours", value: "-", trend: 0 },
-    { icon: <FaFileContract />, title: "Documents partagés", value: "-", trend: 0 }
-  ]);
+  // Get user role from localStorage
+  const [user, setUser] = useState(null);
+  const [isCoordinator, setIsCoordinator] = useState(false);
+
+  // For coordinator: global stats. For member: personalized stats.
+  const [statsData, setStatsData] = useState([]);
   const [meetingsData, setMeetingsData] = useState([]);
   const [actionsData, setActionsData] = useState([]);
   const [activitiesData, setActivitiesData] = useState([]);
   const [documents, setDocuments] = useState([]);
 
   useEffect(() => {
-    // Fetch users
-    fetch('http://localhost:5000/api/Users')
-      .then(res => res.json())
-      .then(users => {
-        setStatsData(prev => prev.map((stat, idx) => idx === 0 ? { ...stat, value: users.length.toString() } : stat));
-      });
-    // Fetch meetings
-    fetch('http://localhost:5000/api/Meetings')
-      .then(res => res.json())
-      .then(meetings => {
-        // Réunions ce mois
-        const now = new Date();
-        const meetingsThisMonth = meetings.filter(m => {
-          const d = new Date(m.date);
-          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-        });
-        setStatsData(prev => prev.map((stat, idx) => idx === 1 ? { ...stat, value: meetingsThisMonth.length.toString() } : stat));
-        setMeetingsData(meetings.map(m => ({
-          date: m.date ? (m.date.split('-')[2] || m.date) : '',
-          month: m.date ? (new Date(m.date).toLocaleString('fr-FR', { month: 'short' })) : '',
-          time: m.time || '',
-          title: m.title,
-          participants: (m.participants || []).map(name => ({ avatar: name.split(' ').map(n => n[0]).join('').toUpperCase() })),
-          additionalParticipants: (m.participants || []).length > 3 ? (m.participants.length - 3) : 0
-        })));
-      });
-    // Fetch actions
-    fetch('http://localhost:5000/api/Actions')
-      .then(res => res.json())
-      .then(actions => {
-        setStatsData(prev => prev.map((stat, idx) => idx === 2 ? { ...stat, value: actions.length.toString() } : stat));
-        setActionsData(actions);
-      });
-    // Fetch documents
-    fetch('http://localhost:5000/api/Documents')
-      .then(res => res.json())
-      .then(docs => {
-        setStatsData(prev => prev.map((stat, idx) => idx === 3 ? { ...stat, value: docs.length.toString() } : stat));
-        setDocuments(docs);
-      });
-    // Fetch activities (if you have an endpoint, otherwise keep static)
-    // setActivitiesData([]);
+    // Get user info only once on mount
+    let u = null;
+    try {
+      u = JSON.parse(localStorage.getItem('user'));
+    } catch (e) {}
+    setUser(u);
+    setIsCoordinator(u && u.role === 'coordinator');
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    if (isCoordinator) {
+      // Coordinator: show global stats
+      setStatsData([
+        { icon: <FaUsers />, title: "Acteurs impliqués", value: "-", trend: 0 },
+        { icon: <FaCalendarCheck />, title: "Réunions ce mois", value: "-", trend: 0 },
+        { icon: <FaTasks />, title: "Actions en cours", value: "-", trend: 0 },
+        { icon: <FaFileContract />, title: "Documents partagés", value: "-", trend: 0 }
+      ]);
+      fetch('http://localhost:5000/api/Users')
+        .then(res => res.json())
+        .then(users => {
+          setStatsData(prev => prev.map((stat, idx) => idx === 0 ? { ...stat, value: users.length.toString() } : stat));
+        });
+      fetch('http://localhost:5000/api/Meetings')
+        .then(res => res.json())
+        .then(meetings => {
+          const now = new Date();
+          const meetingsThisMonth = meetings.filter(m => {
+            const d = new Date(m.date);
+            return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+          });
+          setStatsData(prev => prev.map((stat, idx) => idx === 1 ? { ...stat, value: meetingsThisMonth.length.toString() } : stat));
+          setMeetingsData(meetings.map(m => {
+            const dateObj = m.date ? new Date(m.date) : null;
+            return {
+              date: dateObj ? dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '',
+              time: m.time || '',
+              title: m.title,
+              participants: (m.participants || []).map(name => {
+                // Show first name (prénom)
+                const prenom = name.split(' ')[0];
+                return { avatar: prenom };
+              }),
+              additionalParticipants: (m.participants || []).length > 3 ? (m.participants.length - 3) : 0
+            };
+          }));
+        });
+      fetch('http://localhost:5000/api/Actions')
+        .then(res => res.json())
+        .then(actions => {
+          setStatsData(prev => prev.map((stat, idx) => idx === 2 ? { ...stat, value: actions.length.toString() } : stat));
+          setActionsData(actions);
+        });
+      fetch('http://localhost:5000/api/Documents')
+        .then(res => res.json())
+        .then(docs => {
+          setStatsData(prev => prev.map((stat, idx) => idx === 3 ? { ...stat, value: docs.length.toString() } : stat));
+          setDocuments(docs);
+        });
+    } else {
+      // Member: show personalized stats
+      setStatsData([
+        { icon: <FaTasks />, title: "Mes tâches actives", value: "-", sub: "", color: "blue" },
+        { icon: <FaTasks />, title: "Tâches complétées", value: "-", sub: "Ce mois", color: "green" },
+        { icon: <FaFileContract />, title: "Mes documents", value: "-", sub: "", color: "purple" }
+      ]);
+      // Fetch all actions and filter for this user
+      fetch('http://localhost:5000/api/Actions')
+        .then(res => res.json())
+        .then(actions => {
+          setActionsData(actions);
+          // Active = status === 'En cours', Completed = status === 'Terminées' (all actions)
+          const myActive = actions.filter(a => a.status === 'En cours');
+          const myCompleted = actions.filter(a => a.status === 'Terminées');
+          setStatsData(prev => prev.map((stat, idx) => {
+            if (idx === 0) return { ...stat, value: myActive.length.toString(), sub: `+${myActive.length} en cours` };
+            if (idx === 1) return { ...stat, value: myCompleted.length.toString(), sub: "Ce mois" };
+            return stat;
+          }));
+        });
+      // Fetch all documents and show the count
+      fetch('http://localhost:5000/api/Documents')
+        .then(res => res.json())
+        .then(docs => {
+          setDocuments(docs);
+          setStatsData(prev => prev.map((stat, idx) => {
+            if (idx === 2) return { ...stat, value: docs.length.toString() };
+            return stat;
+          }));
+        });
+      // Fetch all meetings and find the next one for this user
+      fetch('http://localhost:5000/api/Meetings')
+        .then(res => res.json())
+        .then(meetings => {
+          // Format meetings for UI (date, participants)
+          const formattedMeetings = meetings.map(m => {
+            const dateObj = m.date ? new Date(m.date) : null;
+            return {
+              date: dateObj ? dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '',
+              time: m.time || '',
+              title: m.title,
+              participants: (m.participants || []).map(name => {
+                const prenom = name.split(' ')[0];
+                return { avatar: prenom };
+              }),
+              additionalParticipants: (m.participants || []).length > 3 ? (m.participants.length - 3) : 0
+            };
+          });
+          setMeetingsData(formattedMeetings);
+          const now = new Date();
+          const myMeetings = meetings.filter(m => (m.participants || []).includes(user?.name));
+          const nextMeeting = myMeetings
+            .map(m => ({ ...m, dateObj: new Date(m.date) }))
+            .filter(m => m.dateObj > now)
+            .sort((a, b) => a.dateObj - b.dateObj)[0];
+          if (nextMeeting) {
+            const diffDays = Math.ceil((nextMeeting.dateObj - now) / (1000 * 60 * 60 * 24));
+            setStatsData(prev => prev.map((stat, idx) => idx === 2 ? { ...stat, value: `${diffDays}j`, sub: nextMeeting.title } : stat));
+          }
+        });
+      // Documents can be shown in a list below if needed
+      fetch('http://localhost:5000/api/Documents')
+        .then(res => res.json())
+        .then(docs => setDocuments(docs));
+    }
+  }, [isCoordinator, user]);
 
   return (
     <div className="dashboard-container">
