@@ -1,8 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
+import { authFetch } from './authFetch';
 import DashboardHeader from './DashboardHeader';
 import DashboardSidebar from './DashboardSidebar';
+import SettingsContainer from './SettingsContainer';
 import './Dashboard.css';
 import { FaUpload, FaCalendarAlt, FaFileAlt, FaTrash, FaDownload } from 'react-icons/fa';
+
+// Get user role from localStorage
+const user = JSON.parse(localStorage.getItem('user'));
+const isCoordinator = user && user.role === 'coordinator';
 
 
 const API_URL = 'http://localhost:5000/api/documents';
@@ -27,6 +34,7 @@ const typeColors = {
 
 
 const DocumentsPage = () => {
+  const [showSettings, setShowSettings] = useState(false);
   const [documents, setDocuments] = useState([]);
   const [filter, setFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
@@ -39,7 +47,7 @@ const DocumentsPage = () => {
 
   // Fetch documents from backend
   useEffect(() => {
-    fetch(API_URL)
+    authFetch(API_URL)
       .then(res => res.json())
       .then(data => setDocuments(data))
       .catch(() => setDocuments([]));
@@ -53,7 +61,7 @@ const DocumentsPage = () => {
 
   // Delete document in backend
   const handleDelete = async (id) => {
-    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+    await authFetch(`${API_URL}/${id}`, { method: 'DELETE' });
     setDocuments(documents.filter(d => d._id !== id));
   };
 
@@ -76,7 +84,7 @@ const DocumentsPage = () => {
     formData.append('file', form.file); // actual file object
     formData.append('type', form.type);
     formData.append('date', form.date);
-    const res = await fetch(API_URL, {
+    const res = await authFetch(API_URL, {
       method: 'POST',
       body: formData,
     });
@@ -108,19 +116,24 @@ const DocumentsPage = () => {
   return (
     <div className="dashboard-container">
       <DashboardHeader />
-      <DashboardSidebar />
+      <DashboardSidebar onParametreClick={() => setShowSettings(true)} />
+      {showSettings && (
+        <SettingsContainer onClose={() => setShowSettings(false)} />
+      )}
       <main className="dashboard-main">
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24}}>
           <div>
             <h2 className="section-title" style={{marginBottom: 0}}>Gestion Documentaire</h2>
             <div style={{color: '#8d99ae', fontSize: 16}}>Consultez les documents partagés</div>
           </div>
-          <button className="action-button" style={{background: '#6d5dfc', color: '#fff', fontWeight: 500, fontSize: 16, borderRadius: 10, padding: '0.6rem 1.5rem', display: 'flex', alignItems: 'center', gap: 8}} onClick={() => setShowModal(true)}>
-            <FaUpload /> téléverser un document
-          </button>
+          {isCoordinator && (
+            <button className="action-button" style={{background: '#6d5dfc', color: '#fff', fontWeight: 500, fontSize: 16, borderRadius: 10, padding: '0.6rem 1.5rem', display: 'flex', alignItems: 'center', gap: 8}} onClick={() => setShowModal(true)}>
+              <FaUpload /> téléverser un document
+            </button>
+          )}
         </div>
         {/* Modal for upload */}
-        {showModal && (
+        {showModal && isCoordinator && (
           <div style={{position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(30,32,38,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <div style={{background: '#fff', borderRadius: 10, boxShadow: '0 4px 32px rgba(0,0,0,0.18)', padding: '2rem', minWidth: 420, maxWidth: 540, width: '100%', position: 'relative'}}>
               <button onClick={() => setShowModal(false)} style={{position: 'absolute', top: 18, right: 18, background: 'none', border: 'none', fontSize: 22, color: '#222', cursor: 'pointer'}}>×</button>
@@ -223,9 +236,11 @@ const DocumentsPage = () => {
                   <button onClick={() => handleDownload(doc)} style={{background: '#43b36a', color: '#fff', borderRadius: 8, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, border: 'none', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer'}}>
                     <FaDownload /> Télécharger
                   </button>
-                  <button onClick={() => handleDelete(doc._id || doc.id)} style={{background: '#e53935', color: '#fff', borderRadius: 8, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, border: 'none', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer'}}>
-                    <FaTrash />
-                  </button>
+                  {isCoordinator && (
+                    <button onClick={() => handleDelete(doc._id || doc.id)} style={{background: '#e53935', color: '#fff', borderRadius: 8, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, border: 'none', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer'}}>
+                      <FaTrash />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

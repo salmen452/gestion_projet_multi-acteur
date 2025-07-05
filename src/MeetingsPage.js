@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { authFetch } from './authFetch';
 import DashboardHeader from './DashboardHeader';
 import DashboardSidebar from './DashboardSidebar';
+import SettingsContainer from './SettingsContainer';
 import './Dashboard.css';
 
+// Get user role from localStorage
+const user = JSON.parse(localStorage.getItem('user'));
+const isCoordinator = user && user.role === 'coordinator';
+
 const MeetingsPage = () => {
+  const [showSettings, setShowSettings] = useState(false);
   const [meetings, setMeetings] = useState([]);
   const [usersList, setUsersList] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -13,24 +20,22 @@ const MeetingsPage = () => {
     title: '',
     description: '',
     date: '',
-    duration: '',
+    time: '',
     type: 'Virtuel',
   });
   const [agendaInput, setAgendaInput] = useState('');
   const [agenda, setAgenda] = useState([]);
   const [participants, setParticipants] = useState([]);
-  // ...existing code...
 
   // Fetch meetings and users from backend
   useEffect(() => {
-    fetch('http://localhost:5000/api/Meetings')
+    authFetch('http://localhost:5000/api/Meetings')
       .then(res => res.json())
       .then(data => setMeetings(data))
       .catch(() => setMeetings([]));
     fetch('http://localhost:5000/api/Users')
       .then(res => res.json())
       .then(data => {
-        console.log('Fetched users:', data);
         setUsersList(data);
       })
       .catch(() => setUsersList([]));
@@ -38,7 +43,7 @@ const MeetingsPage = () => {
 
   const handleOpenModal = () => {
     setEditMeeting(null);
-    setForm({ title: '', description: '', date: '', duration: '', type: 'Virtuel' });
+    setForm({ title: '', description: '', date: '', time: '', type: 'Virtuel' });
     setAgenda([]);
     setParticipants([]);
     setShowModal(true);
@@ -62,19 +67,18 @@ const MeetingsPage = () => {
       agenda,
       participants,
       location: '',
-      time: '',
     };
     const url = editMeeting
       ? `http://localhost:5000/api/Meetings/${editMeeting._id || editMeeting.id}`
       : 'http://localhost:5000/api/Meetings';
     const method = editMeeting ? 'PUT' : 'POST';
-    await fetch(url, {
+    await authFetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(meetingData),
     });
     // Refresh meetings
-    fetch('http://localhost:5000/api/Meetings')
+    authFetch('http://localhost:5000/api/Meetings')
       .then(res => res.json())
       .then(data => setMeetings(data));
     setShowModal(false);
@@ -82,8 +86,8 @@ const MeetingsPage = () => {
 
   // Delete meeting
   const handleDelete = async (id) => {
-    await fetch(`http://localhost:5000/api/Meetings/${id}`, { method: 'DELETE' });
-    fetch('http://localhost:5000/api/Meetings')
+    await authFetch(`http://localhost:5000/api/Meetings/${id}`, { method: 'DELETE' });
+    authFetch('http://localhost:5000/api/Meetings')
       .then(res => res.json())
       .then(data => setMeetings(data));
   };
@@ -95,7 +99,7 @@ const MeetingsPage = () => {
       title: meeting.title,
       description: meeting.description,
       date: meeting.date,
-      duration: '',
+      time: meeting.time || '',
       type: meeting.type,
     });
     setAgenda(meeting.agenda || []);
@@ -115,22 +119,24 @@ const MeetingsPage = () => {
     setAgenda(agenda.filter((_, i) => i !== idx));
   };
 
-  // Documents handlers
-  // ...existing code...
-
   return (
     <div className="dashboard-container">
       <DashboardHeader />
-      <DashboardSidebar />
+      <DashboardSidebar onParametreClick={() => setShowSettings(true)} />
+      {showSettings && (
+        <SettingsContainer onClose={() => setShowSettings(false)} />
+      )}
       <main className="dashboard-main">
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24}}>
           <div>
             <h2 className="section-title" style={{marginBottom: 0}}>Réunions</h2>
             <div style={{color: '#8d99ae', fontSize: 16}}>Consultez et gérez vos réunions</div>
           </div>
-          <button className="action-button" style={{background: '#6d5dfc', color: '#fff', fontWeight: 500, fontSize: 16, borderRadius: 10, padding: '0.6rem 1.5rem', display: 'flex', alignItems: 'center', gap: 8}} onClick={handleOpenModal}>
-            + Nouvelle réunion
-          </button>
+          {isCoordinator && (
+            <button className="action-button" style={{background: '#6d5dfc', color: '#fff', fontWeight: 500, fontSize: 16, borderRadius: 10, padding: '0.6rem 1.5rem', display: 'flex', alignItems: 'center', gap: 8}} onClick={handleOpenModal}>
+              + Nouvelle réunion
+            </button>
+          )}
         </div>
         {/* Summary Card */}
         <div style={{background: '#e3f0fa', borderRadius: 16, padding: '1.2rem 2.2rem', minWidth: 120, textAlign: 'left', marginBottom: 24, maxWidth: 400}}>
@@ -160,10 +166,12 @@ const MeetingsPage = () => {
                   <span style={{fontSize: 15}}>Date: {meeting.date}</span>
                   <span style={{background: '#6d5dfc', color: '#fff', borderRadius: 16, padding: '0.2rem 1.1rem', fontWeight: 600, fontSize: 15}}>{meeting.type}</span>
                 </div>
-                <div style={{display: 'flex', gap: 10, marginLeft: 28, marginTop: 6}}>
-                  <button className="meeting-action-btn" style={{background: '#4CAF50', color: 'white', border: 'none', borderRadius: 8, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, cursor: 'pointer', transition: 'background 0.2s, transform 0.2s'}} onClick={() => handleEdit(meeting)}>Modifier</button>
-                  <button className="meeting-action-btn" style={{background: '#F44336', color: 'white', border: 'none', borderRadius: 8, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, cursor: 'pointer', transition: 'background 0.2s, transform 0.2s'}} onClick={() => handleDelete(meeting._id || meeting.id)}>Supprimer</button>
-                </div>
+                {isCoordinator && (
+                  <div style={{display: 'flex', gap: 10, marginLeft: 28, marginTop: 6}}>
+                    <button className="meeting-action-btn" style={{background: '#4CAF50', color: 'white', border: 'none', borderRadius: 8, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, cursor: 'pointer', transition: 'background 0.2s, transform 0.2s'}} onClick={() => handleEdit(meeting)}>Modifier</button>
+                    <button className="meeting-action-btn" style={{background: '#F44336', color: 'white', border: 'none', borderRadius: 8, padding: '0.5rem 1.2rem', fontWeight: 600, fontSize: 15, cursor: 'pointer', transition: 'background 0.2s, transform 0.2s'}} onClick={() => handleDelete(meeting._id || meeting.id)}>Supprimer</button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -193,11 +201,7 @@ const MeetingsPage = () => {
                   </div>
                   <div style={{color: '#8d99ae', fontWeight: 500}}>{selectedMeeting.title.split(' ')[0]}</div>
                   <div style={{color: '#8d99ae', fontSize: 13}}>{selectedMeeting.time || ''}</div>
-                  {selectedMeeting.duration && (
-                    <div style={{color: '#6d5dfc', fontWeight: 600, fontSize: 14, marginTop: 6}}>
-                      Durée : {selectedMeeting.duration} min
-                    </div>
-                  )}
+                  {/* Durée supprimée de l'affichage */}
                 </div>
                 <div style={{flex: 1, minWidth: 200}}>
                   <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -214,7 +218,6 @@ const MeetingsPage = () => {
                         ))}
                       </ul>
                     </div>
-                    {/* Documents section removed to prevent map on undefined */}
                   </div>
                   <div style={{marginTop: '2rem'}}>
                     <div style={{fontWeight: 600, marginBottom: 8}}>Participants</div>
@@ -239,7 +242,7 @@ const MeetingsPage = () => {
           </div>
         )}
         {/* New Meeting Modal */}
-        {showModal && (
+        {showModal && isCoordinator && (
           <div style={{position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(30,32,38,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <div style={{background: '#fff', borderRadius: 16, boxShadow: '0 8px 40px rgba(0,0,0,0.18)', padding: '2.5rem 2.2rem 2rem 2.2rem', minWidth: 380, maxWidth: 520, width: '95%', position: 'relative', maxHeight: '90vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 0}}>
               <button onClick={handleCloseModal} style={{position: 'absolute', top: 18, right: 18, background: 'none', border: 'none', fontSize: 26, color: '#222', cursor: 'pointer', fontWeight: 700, lineHeight: 1}}>×</button>
@@ -267,10 +270,7 @@ const MeetingsPage = () => {
                       <input type="time" name="time" value={form.time || ''} onChange={handleFormChange} required style={{width: '100%', padding: '0.6rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, background: '#f8f9fa',marginLeft:14}} />
                     </div>
                   </div>
-                  <div style={{width: '100%'}}>
-                    <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Durée (minutes)</label>
-                    <input type="number" name="duration" value={form.duration} onChange={handleFormChange} style={{width: '100%', padding: '0.7rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, background: '#f8f9fa'}} />
-                  </div>
+                  {/* Durée supprimée */}
                   <div style={{width: '100%'}}>
                     <label style={{fontWeight: 500, fontSize: 15, display: 'block', marginBottom: 8}}>Type de réunion</label>
                     <select name="type" value={form.type} onChange={handleFormChange} style={{width: '100%', padding: '0.7rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, background: '#f8f9fa'}}>

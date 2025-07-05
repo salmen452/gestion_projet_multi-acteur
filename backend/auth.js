@@ -1,9 +1,45 @@
+// Create a new user (admin only)
+router.post('/Users', async (req, res) => {
+  try {
+    const { email, name, phone, organisation, password, role } = req.body;
+    if (!email || !name || !phone || !password) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: 'User already exists.' });
+    }
+    const hashedPassword = await require('bcryptjs').hash(password, 10);
+    const user = new User({ email, name, phone, organisation, password: hashedPassword, role });
+    await user.save();
+    res.status(201).json({ message: 'User created successfully.', user });
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+// Delete a user by ID (admin only)
+router.delete('/Users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await User.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    res.json({ message: 'User deleted.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
 // ...existing code...
 
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const upload = multer();
+const jwt = require('jsonwebtoken');
+const { authenticate, authorizeRole } = require('./middleware/auth');
+const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
 const router = express.Router();
 const Document = require('./models/Document');
@@ -21,8 +57,8 @@ router.get('/documents', async (req, res) => {
   }
 });
 
-// Create a new document with file upload
-router.post('/documents', upload.single('file'), async (req, res) => {
+// Create a new document with file upload (coordinator only)
+router.post('/documents', authenticate, authorizeRole('coordinator'), upload.single('file'), async (req, res) => {
   try {
     const { name, type, date } = req.body;
     const file = req.file;
@@ -44,8 +80,8 @@ router.post('/documents', upload.single('file'), async (req, res) => {
   }
 });
 
-// Update a document by ID (PATCH)
-router.patch('/documents/:id', async (req, res) => {
+// Update a document by ID (PATCH) (coordinator only)
+router.patch('/documents/:id', authenticate, authorizeRole('coordinator'), async (req, res) => {
   try {
     const { id } = req.params;
     const updated = await Document.findByIdAndUpdate(id, req.body, { new: true });
@@ -58,8 +94,8 @@ router.patch('/documents/:id', async (req, res) => {
   }
 });
 
-// Delete a document by ID
-router.delete('/documents/:id', async (req, res) => {
+// Delete a document by ID (coordinator only)
+router.delete('/documents/:id', authenticate, authorizeRole('coordinator'), async (req, res) => {
   try {
     const { id } = req.params;
     const deleted = await Document.findByIdAndDelete(id);
@@ -97,8 +133,8 @@ router.get('/actions', async (req, res) => {
   }
 });
 
-// Create a new action
-router.post('/actions', async (req, res) => {
+// Create a new action (coordinator only)
+router.post('/actions', authenticate, authorizeRole('coordinator'), async (req, res) => {
   try {
     const action = new Action(req.body);
     await action.save();
@@ -108,8 +144,8 @@ router.post('/actions', async (req, res) => {
   }
 });
 
-// Update an action by ID (PATCH)
-router.patch('/actions/:id', async (req, res) => {
+// Update an action by ID (PATCH) (coordinator only)
+router.patch('/actions/:id', authenticate, authorizeRole('coordinator'), async (req, res) => {
   try {
     const { id } = req.params;
     const updated = await Action.findByIdAndUpdate(id, req.body, { new: true });
@@ -122,8 +158,8 @@ router.patch('/actions/:id', async (req, res) => {
   }
 });
 
-// Delete an action by ID
-router.delete('/actions/:id', async (req, res) => {
+// Delete an action by ID (coordinator only)
+router.delete('/actions/:id', authenticate, authorizeRole('coordinator'), async (req, res) => {
   try {
     const { id } = req.params;
     const deleted = await Action.findByIdAndDelete(id);
@@ -162,7 +198,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// Login route
+// Login route with JWT
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -177,10 +213,14 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid email or password.' });
     }
-    // Optionally, generate a token here (e.g., JWT)
-    // For now, just return user info (excluding password)
     const { password: _, ...userData } = user.toObject();
-    res.json({ message: 'Login successful', user: userData });
+    // Generate JWT
+    const token = jwt.sign(
+      { id: user._id, role: user.role, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+    res.json({ message: 'Login successful', user: userData, token });
   } catch (err) {
     res.status(500).json({ message: err.message || 'Server error.' });
   }
@@ -211,8 +251,8 @@ router.get('/Meetings', async (req, res) => {
   }
 });
 
-// Delete a meeting by ID
-router.delete('/Meetings/:id', async (req, res) => {
+// Delete a meeting by ID (coordinator only)
+router.delete('/Meetings/:id', authenticate, authorizeRole('coordinator'), async (req, res) => {
   try {
     const { id } = req.params;
     const deleted = await Meeting.findByIdAndDelete(id);
@@ -243,8 +283,8 @@ function parseMeetingDocuments(req) {
   };
 }
 
-// Create a new meeting (with file upload)
-router.post('/Meetings', meetingsUpload, async (req, res) => {
+// Create a new meeting (with file upload) (coordinator only)
+router.post('/Meetings', authenticate, authorizeRole('coordinator'), meetingsUpload, async (req, res) => {
   try {
     console.log('FILES:', req.files);
     console.log('BODY:', req.body);
@@ -274,8 +314,8 @@ router.post('/Meetings', meetingsUpload, async (req, res) => {
   }
 });
 
-// Update a meeting by ID (with file upload)
-router.put('/Meetings/:id', meetingsUpload, async (req, res) => {
+// Update a meeting by ID (with file upload) (coordinator only)
+router.put('/Meetings/:id', authenticate, authorizeRole('coordinator'), meetingsUpload, async (req, res) => {
   try {
     let document = parseMeetingDocuments(req);
     const update = {
@@ -305,7 +345,6 @@ router.put('/Meetings/:id', meetingsUpload, async (req, res) => {
   }
 });
 
-module.exports = router;
 // Download a meeting's document by meeting ID
 router.get('/Meetings/:id/document', async (req, res) => {
   try {
@@ -326,3 +365,23 @@ router.get('/Meetings/:id/document', async (req, res) => {
     res.status(500).json({ message: err.message || 'Server error.' });
   }
 });
+// Update user by ID
+router.patch('/Users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const update = {};
+    if (req.body.name) update.name = req.body.name;
+    if (req.body.phone) update.phone = req.body.phone;
+    if (req.body.organisation) update.organisation = req.body.organisation;
+    // Add more fields as needed
+    const updated = await User.findByIdAndUpdate(id, update, { new: true });
+    if (!updated) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
+module.exports = router;

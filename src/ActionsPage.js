@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { authFetch } from './authFetch';
 import DashboardHeader from './DashboardHeader';
 import DashboardSidebar from './DashboardSidebar';
+import SettingsContainer from './SettingsContainer';
 import './Dashboard.css';
 import { FaPlus, FaCalendarAlt, FaInfoCircle } from 'react-icons/fa';
 
@@ -28,6 +30,7 @@ const priorityColors = {
 
 
 const ActionsPage = () => {
+  const [showSettings, setShowSettings] = useState(false);
   const [actions, setActions] = useState([]);
   const [filter, setFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
@@ -37,10 +40,13 @@ const ActionsPage = () => {
     priority: 'Moyenne',
     dueDate: '',
   });
+  // Get user role from localStorage
+  const user = JSON.parse(localStorage.getItem('user'));
+  const isCoordinator = user && user.role === 'coordinator';
 
   // Fetch actions from backend
   useEffect(() => {
-    fetch(API_URL)
+    authFetch(API_URL)
       .then(res => res.json())
       .then(data => setActions(data))
       .catch(() => setActions([]));
@@ -72,7 +78,7 @@ const ActionsPage = () => {
       priority: form.priority,
       status: 'À faire',
     };
-    const res = await fetch(API_URL, {
+    const res = await authFetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newAction),
@@ -86,7 +92,7 @@ const ActionsPage = () => {
 
   // Update action status in backend
   const handleTerminer = async (id) => {
-    const res = await fetch(`${API_URL}/${id}`, {
+    const res = await authFetch(`${API_URL}/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'Terminées' }),
@@ -96,7 +102,7 @@ const ActionsPage = () => {
   };
 
   const handleCommencer = async (id) => {
-    const res = await fetch(`${API_URL}/${id}`, {
+    const res = await authFetch(`${API_URL}/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'En cours' }),
@@ -108,19 +114,24 @@ const ActionsPage = () => {
   return (
     <div className="dashboard-container">
       <DashboardHeader />
-      <DashboardSidebar />
+      <DashboardSidebar onParametreClick={() => setShowSettings(true)} />
+      {showSettings && (
+        <SettingsContainer onClose={() => setShowSettings(false)} />
+      )}
       <main className="dashboard-main">
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24}}>
           <div>
             <h2 className="section-title" style={{marginBottom: 0}}>Suivi des Actions</h2>
             <div style={{color: '#8d99ae', fontSize: 16}}>Consultez vos actions assignées</div>
           </div>
-          <button className="action-button" style={{background: '#6d5dfc', color: '#fff', fontWeight: 500, fontSize: 16, borderRadius: 10, padding: '0.6rem 1.5rem', display: 'flex', alignItems: 'center', gap: 8}} onClick={() => setShowModal(true)}>
-            <FaPlus /> Nouvelle Action
-          </button>
+          {isCoordinator && (
+            <button className="action-button" style={{background: '#6d5dfc', color: '#fff', fontWeight: 500, fontSize: 16, borderRadius: 10, padding: '0.6rem 1.5rem', display: 'flex', alignItems: 'center', gap: 8}} onClick={() => setShowModal(true)}>
+              <FaPlus /> Nouvelle Action
+            </button>
+          )}
         </div>
         {/* Modal for new action */}
-        {showModal && (
+        {isCoordinator && showModal && (
           <div style={{position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(30,32,38,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <div style={{background: '#fff', borderRadius: 10, boxShadow: '0 4px 32px rgba(0,0,0,0.18)', padding: '2rem', minWidth: 420, maxWidth: 540, width: '100%', position: 'relative'}}>
               <button onClick={() => setShowModal(false)} style={{position: 'absolute', top: 18, right: 18, background: 'none', border: 'none', fontSize: 22, color: '#222', cursor: 'pointer'}}>×</button>
@@ -210,44 +221,46 @@ const ActionsPage = () => {
                     <FaInfoCircle style={{marginRight: 8, color: '#444'}} />
                     <span style={{fontWeight: 700, fontSize: 20}}>{action.title}</span>
                   </div>
-                  <div>
-                    {action.status === 'À faire' && (
-                      <button
-                        style={{
-                          background: '#1976d2',
-                          color: '#fff',
-                          border: 'none',
-                          borderRadius: 16,
-                          padding: '0.5rem 1.5rem',
-                          fontWeight: 600,
-                          fontSize: 16,
-                          cursor: 'pointer',
-                          marginLeft: 12
-                        }}
-                        onClick={() => handleCommencer(action._id || action.id)}
-                      >
-                        Commencer
-                      </button>
-                    )}
-                    {action.status === 'En cours' && (
-                      <button
-                        style={{
-                          background: '#ffa726',
-                          color: '#fff',
-                          border: 'none',
-                          borderRadius: 16,
-                          padding: '0.5rem 1.5rem',
-                          fontWeight: 600,
-                          fontSize: 16,
-                          cursor: 'pointer',
-                          marginLeft: 12
-                        }}
-                        onClick={() => handleTerminer(action._id || action.id)}
-                      >
-                        Terminer
-                      </button>
-                    )}
-                  </div>
+                  {isCoordinator && (
+                    <div>
+                      {action.status === 'À faire' && (
+                        <button
+                          style={{
+                            background: '#1976d2',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: 16,
+                            padding: '0.5rem 1.5rem',
+                            fontWeight: 600,
+                            fontSize: 16,
+                            cursor: 'pointer',
+                            marginLeft: 12
+                          }}
+                          onClick={() => handleCommencer(action._id || action.id)}
+                        >
+                          Commencer
+                        </button>
+                      )}
+                      {action.status === 'En cours' && (
+                        <button
+                          style={{
+                            background: '#ffa726',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: 16,
+                            padding: '0.5rem 1.5rem',
+                            fontWeight: 600,
+                            fontSize: 16,
+                            cursor: 'pointer',
+                            marginLeft: 12
+                          }}
+                          onClick={() => handleTerminer(action._id || action.id)}
+                        >
+                          Terminer
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div style={{color: '#8d99ae', fontSize: 16, marginLeft: 28}}>{action.description}</div>
                 <div style={{display: 'flex', alignItems: 'center', gap: 16, marginLeft: 28, marginTop: 4}}>
