@@ -40,6 +40,9 @@ const ActionsPage = () => {
     priority: 'Moyenne',
     dueDate: '',
   });
+  const [usersList, setUsersList] = useState([]);
+  const [participants, setParticipants] = useState([]);
+  const [editAction, setEditAction] = useState(null);
   // Get user role from localStorage
   const user = JSON.parse(localStorage.getItem('user'));
   const isCoordinator = user && user.role === 'coordinator';
@@ -50,6 +53,10 @@ const ActionsPage = () => {
       .then(res => res.json())
       .then(data => setActions(data))
       .catch(() => setActions([]));
+    fetch('http://localhost:5000/api/Users')
+      .then(res => res.json())
+      .then(data => setUsersList(data))
+      .catch(() => setUsersList([]));
   }, []);
 
   const filteredActions = filter === 'all' ? actions : actions.filter(a => a.status === filter);
@@ -67,26 +74,58 @@ const ActionsPage = () => {
     setForm(f => ({ ...f, [name]: value }));
   };
 
+  const handleOpenModal = () => {
+    setEditAction(null);
+    setForm({ title: '', description: '', priority: 'Moyenne', dueDate: '' });
+    setParticipants([]);
+    setShowModal(true);
+  };
 
-  // Create new action in backend
-  const handleCreateAction = async (e) => {
+  const handleEditAction = (action) => {
+    setEditAction(action);
+    setForm({
+      title: action.title,
+      description: action.description,
+      priority: action.priority,
+      dueDate: action.dueDate,
+    });
+    setParticipants(action.participants || []);
+    setShowModal(true);
+  };
+
+  const handleSubmitAction = async (e) => {
     e.preventDefault();
-    const newAction = {
+    const actionData = {
       title: form.title,
       description: form.description,
       dueDate: form.dueDate,
       priority: form.priority,
-      status: 'À faire',
+      participants,
+      status: editAction ? editAction.status : 'À faire',
     };
-    const res = await authFetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newAction),
-    });
-    const savedAction = await res.json();
-    setActions([...actions, savedAction]);
+    if (editAction) {
+      // PATCH update
+      const res = await authFetch(`${API_URL}/${editAction._id || editAction.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(actionData),
+      });
+      const updated = await res.json();
+      setActions(actions => actions.map(a => (a._id === updated._id ? updated : a)));
+    } else {
+      // POST create
+      const res = await authFetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...actionData, status: 'À faire' }),
+      });
+      const savedAction = await res.json();
+      setActions([...actions, savedAction]);
+    }
     setShowModal(false);
     setForm({ title: '', description: '', priority: 'Moyenne', dueDate: '' });
+    setParticipants([]);
+    setEditAction(null);
   };
 
 
@@ -125,18 +164,18 @@ const ActionsPage = () => {
             <div style={{color: '#8d99ae', fontSize: 16}}>Consultez vos actions assignées</div>
           </div>
           {isCoordinator && (
-            <button className="action-button" style={{background: '#6d5dfc', color: '#fff', fontWeight: 500, fontSize: 16, borderRadius: 10, padding: '0.6rem 1.5rem', display: 'flex', alignItems: 'center', gap: 8}} onClick={() => setShowModal(true)}>
+            <button className="action-button" style={{background: '#6d5dfc', color: '#fff', fontWeight: 500, fontSize: 16, borderRadius: 10, padding: '0.6rem 1.5rem', display: 'flex', alignItems: 'center', gap: 8}} onClick={handleOpenModal}>
               <FaPlus /> Nouvelle Action
             </button>
           )}
         </div>
-        {/* Modal for new action */}
+        {/* Modal for new/edit action */}
         {isCoordinator && showModal && (
           <div style={{position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(30,32,38,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <div style={{background: '#fff', borderRadius: 10, boxShadow: '0 4px 32px rgba(0,0,0,0.18)', padding: '2rem', minWidth: 420, maxWidth: 540, width: '100%', position: 'relative'}}>
               <button onClick={() => setShowModal(false)} style={{position: 'absolute', top: 18, right: 18, background: 'none', border: 'none', fontSize: 22, color: '#222', cursor: 'pointer'}}>×</button>
-              <h3 style={{marginTop: 0, marginBottom: 18, fontWeight: 600, fontSize: 22}}>Créer une nouvelle action</h3>
-              <form onSubmit={handleCreateAction}>
+              <h3 style={{marginTop: 0, marginBottom: 18, fontWeight: 600, fontSize: 22}}>{editAction ? 'Modifier l\'action' : 'Créer une nouvelle action'}</h3>
+              <form onSubmit={handleSubmitAction}>
                 <div style={{marginBottom: 16}}>
                   <label style={{fontWeight: 500, fontSize: 15}}>Titre de l'action</label>
                   <input name="title" value={form.title} onChange={handleFormChange} required style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #222', fontSize: 16, marginTop: 4}} />
@@ -157,6 +196,31 @@ const ActionsPage = () => {
                   <div style={{flex: 1}}>
                     <label style={{fontWeight: 500, fontSize: 15}}>Date d'échéance</label>
                     <input name="dueDate" value={form.dueDate} onChange={handleFormChange} type="date" required style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16, marginTop: 4}} />
+                  </div>
+                </div>
+                {/* Add participants multi-select to the modal */}
+                <div style={{marginBottom: 16}}>
+                  <label style={{fontWeight: 500, fontSize: 15}}>Participants</label>
+                  <select
+                    multiple
+                    value={participants}
+                    onChange={e => {
+                      const selected = Array.from(e.target.selectedOptions, option => option.value);
+                      setParticipants(selected);
+                    }}
+                    style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16, marginTop: 4, minHeight: 60, background: '#f8f9fa'}}
+                  >
+                    {usersList.map(user => {
+                      const displayName = user.name || user.nom || user.email || 'Utilisateur inconnu';
+                      return (
+                        <option key={user._id || user.id || user.email} value={user._id || user.id}>
+                          {displayName}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <div style={{fontSize: 13, color: '#8d99ae'}}>
+                    Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs participants
                   </div>
                 </div>
                 <button type="submit" style={{background: '#11192f', color: '#fff', fontWeight: 600, fontSize: 16, borderRadius: 8, padding: '0.7rem 1.5rem', border: 'none', marginTop: 8, float: 'right', cursor: 'pointer'}}>Créer l'action</button>
@@ -259,6 +323,11 @@ const ActionsPage = () => {
                           Terminer
                         </button>
                       )}
+                      {isCoordinator && (
+                        <button style={{marginLeft: 8, background: '#e0e0e0', color: '#222', border: 'none', borderRadius: 8, padding: '0.4rem 1.1rem', fontWeight: 600, fontSize: 15, cursor: 'pointer'}} onClick={() => handleEditAction(action)}>
+                          Modifier
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
@@ -270,6 +339,23 @@ const ActionsPage = () => {
                 <div style={{display: 'flex', gap: 10, marginLeft: 28, marginTop: 6}}>
                   <span style={{background: priorityColors[action.priority] || '#eee', color: '#fff', borderRadius: 16, padding: '0.2rem 1.1rem', fontWeight: 600, fontSize: 15}}>{action.priority}</span>
                   <span style={{background: statusColors[action.status] || '#eee', color: '#fff', borderRadius: 16, padding: '0.2rem 1.1rem', fontWeight: 600, fontSize: 15}}>{action.status}</span>
+                </div>
+                {/* Assigned members */}
+                <div style={{marginLeft: 28, marginTop: 6, display: 'flex', alignItems: 'center', gap: 8}}>
+                  <span style={{fontWeight: 500}}>Assignés:</span>
+                  {(action.participants || []).length === 0 ? (
+                    <span style={{color: '#8d99ae'}}>Aucun membre</span>
+                  ) : (
+                    (action.participants || []).map((pid, idx) => {
+                      const userObj = usersList.find(u => (u._id === pid || u.id === pid));
+                      const prenom = userObj ? (userObj.name || userObj.nom || userObj.email).split(' ')[0] : pid;
+                      return (
+                        <span key={idx} style={{background:'#e3eaff',color:'#1a237e',fontWeight:500,fontSize:13,padding:'2px 10px',borderRadius:12,marginRight:4}}>
+                          {prenom}
+                        </span>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             ))
