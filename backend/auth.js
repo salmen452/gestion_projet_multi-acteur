@@ -223,12 +223,16 @@ router.get('/Meetings', async (req, res) => {
 router.delete('/Meetings/:id', authenticate, authorizeRole('coordinator'), async (req, res) => {
   try {
     const { id } = req.params;
+    console.log('DELETE /Meetings/:id called with id:', id);
     const deleted = await Meeting.findByIdAndDelete(id);
     if (!deleted) {
-      return res.status(404).json({ message: 'Meeting not found.' });
+      console.log('Meeting not found for id:', id);
+      return res.status(404).json({ message: `Meeting not found. (id: ${id})` });
     }
+    console.log('Meeting deleted:', deleted);
     res.json({ message: 'Meeting deleted.' });
   } catch (err) {
+    console.error('Error deleting meeting:', err);
     res.status(500).json({ message: err.message || 'Server error.' });
   }
 });

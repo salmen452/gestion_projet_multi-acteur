@@ -25,6 +25,7 @@ const Dashboard = () => {
   const [actionsData, setActionsData] = useState([]);
   const [activitiesData, setActivitiesData] = useState([]);
   const [documents, setDocuments] = useState([]);
+  const [usersList, setUsersList] = useState([]);
 
   useEffect(() => {
     // Get user info only once on mount
@@ -46,34 +47,45 @@ const Dashboard = () => {
         { icon: <FaTasks />, title: "Actions en cours", value: "-", trend: 0 },
         { icon: <FaFileContract />, title: "Documents partagés", value: "-", trend: 0 }
       ]);
+      // Fetch users first, then meetings
       fetch('http://localhost:5000/api/Users')
         .then(res => res.json())
         .then(users => {
+          setUsersList(users);
           setStatsData(prev => prev.map((stat, idx) => idx === 0 ? { ...stat, value: users.length.toString() } : stat));
-        });
-      fetch('http://localhost:5000/api/Meetings')
-        .then(res => res.json())
-        .then(meetings => {
-          const now = new Date();
-          const meetingsThisMonth = meetings.filter(m => {
-            const d = new Date(m.date);
-            return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-          });
-          setStatsData(prev => prev.map((stat, idx) => idx === 1 ? { ...stat, value: meetingsThisMonth.length.toString() } : stat));
-          setMeetingsData(meetings.map(m => {
-            const dateObj = m.date ? new Date(m.date) : null;
-            return {
-              date: dateObj ? dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '',
-              time: m.time || '',
-              title: m.title,
-              participants: (m.participants || []).map(name => {
-                // Show first name (prénom)
-                const prenom = name.split(' ')[0];
-                return { avatar: prenom };
-              }),
-              additionalParticipants: (m.participants || []).length > 3 ? (m.participants.length - 3) : 0
-            };
-          }));
+          fetch('http://localhost:5000/api/Meetings')
+            .then(res => res.json())
+            .then(meetings => {
+              let filteredMeetings = meetings;
+              if (!isCoordinator && user) {
+                const userId = user._id || user.id;
+                filteredMeetings = meetings.filter(m => (m.participants || []).includes(userId));
+              }
+              const now = new Date();
+              const meetingsThisMonth = filteredMeetings.filter(m => {
+                const d = new Date(m.date);
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+              });
+              setStatsData(prev => prev.map((stat, idx) => idx === 1 ? { ...stat, value: meetingsThisMonth.length.toString() } : stat));
+              const userIdToName = {};
+              users.forEach(u => {
+                userIdToName[u._id || u.id] = u.name || u.nom || u.email;
+              });
+              setMeetingsData(filteredMeetings.map(m => {
+                const dateObj = m.date ? new Date(m.date) : null;
+                return {
+                  date: dateObj ? dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '',
+                  time: m.time || '',
+                  title: m.title,
+                  participants: (m.participants || []).map(pid => {
+                    const fullName = userIdToName[pid] || pid;
+                    const prenom = fullName.split(' ')[0];
+                    return { avatar: prenom };
+                  }),
+                  additionalParticipants: (m.participants || []).length > 3 ? (m.participants.length - 3) : 0
+                };
+              }));
+            });
         });
       fetch('http://localhost:5000/api/Actions')
         .then(res => res.json())
@@ -94,6 +106,37 @@ const Dashboard = () => {
         { icon: <FaTasks />, title: "Tâches complétées", value: "-", sub: "Ce mois", color: "green" },
         { icon: <FaFileContract />, title: "Mes documents", value: "-", sub: "", color: "purple" }
       ]);
+      // Fetch users first, then meetings
+      fetch('http://localhost:5000/api/Users')
+        .then(res => res.json())
+        .then(users => {
+          setUsersList(users);
+          fetch('http://localhost:5000/api/Meetings')
+            .then(res => res.json())
+            .then(meetings => {
+              let filteredMeetings = meetings;
+              if (!isCoordinator && user) {
+                const userId = user._id || user.id;
+                filteredMeetings = meetings.filter(m => (m.participants || []).includes(userId));
+              }
+              // Format meetings for UI (date, participants)
+              const formattedMeetings = filteredMeetings.map(m => {
+                const dateObj = m.date ? new Date(m.date) : null;
+                return {
+                  date: dateObj ? dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '',
+                  time: m.time || '',
+                  title: m.title,
+                  participants: (m.participants || []).map(pid => {
+                    const userObj = users.find(u => (u._id === pid || u.id === pid));
+                    const prenom = userObj ? (userObj.name || userObj.nom || userObj.email).split(' ')[0] : pid;
+                    return { avatar: prenom };
+                  }),
+                  additionalParticipants: (m.participants || []).length > 3 ? (m.participants.length - 3) : 0
+                };
+              });
+              setMeetingsData(formattedMeetings);
+            });
+        });
       // Fetch all actions and filter for this user
       fetch('http://localhost:5000/api/Actions')
         .then(res => res.json())
@@ -122,15 +165,22 @@ const Dashboard = () => {
       fetch('http://localhost:5000/api/Meetings')
         .then(res => res.json())
         .then(meetings => {
+          let filteredMeetings = meetings;
+          if (!isCoordinator && user) {
+            const userId = user._id || user.id;
+            filteredMeetings = meetings.filter(m => (m.participants || []).includes(userId));
+          }
           // Format meetings for UI (date, participants)
-          const formattedMeetings = meetings.map(m => {
+          const formattedMeetings = filteredMeetings.map(m => {
             const dateObj = m.date ? new Date(m.date) : null;
             return {
               date: dateObj ? dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '',
               time: m.time || '',
               title: m.title,
-              participants: (m.participants || []).map(name => {
-                const prenom = name.split(' ')[0];
+              participants: (m.participants || []).map(pid => {
+                // Try to get the name from usersList
+                const userObj = usersList.find(u => (u._id === pid || u.id === pid));
+                const prenom = userObj ? (userObj.name || userObj.nom || userObj.email).split(' ')[0] : pid;
                 return { avatar: prenom };
               }),
               additionalParticipants: (m.participants || []).length > 3 ? (m.participants.length - 3) : 0
@@ -138,7 +188,7 @@ const Dashboard = () => {
           });
           setMeetingsData(formattedMeetings);
           const now = new Date();
-          const myMeetings = meetings.filter(m => (m.participants || []).includes(user?.name));
+          const myMeetings = filteredMeetings.filter(m => (m.participants || []).includes(user?._id || user?.id));
           const nextMeeting = myMeetings
             .map(m => ({ ...m, dateObj: new Date(m.date) }))
             .filter(m => m.dateObj > now)
@@ -153,7 +203,7 @@ const Dashboard = () => {
         .then(res => res.json())
         .then(docs => setDocuments(docs));
     }
-  }, [isCoordinator, user]);
+  }, [user, isCoordinator]);
 
   return (
     <div className="dashboard-container">

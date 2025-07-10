@@ -26,12 +26,21 @@ const MeetingsPage = () => {
   const [agendaInput, setAgendaInput] = useState('');
   const [agenda, setAgenda] = useState([]);
   const [participants, setParticipants] = useState([]);
+  const [errorMsg, setErrorMsg] = useState('');
 
   // Fetch meetings and users from backend
   useEffect(() => {
     authFetch('http://localhost:5000/api/Meetings')
       .then(res => res.json())
-      .then(data => setMeetings(data))
+      .then(data => {
+        if (isCoordinator) {
+          setMeetings(data);
+        } else {
+          // For members, filter meetings where user ID is a participant
+          const userId = user && (user._id || user.id);
+          setMeetings(data.filter(m => (m.participants || []).includes(userId)));
+        }
+      })
       .catch(() => setMeetings([]));
     fetch('http://localhost:5000/api/Users')
       .then(res => res.json())
@@ -61,35 +70,53 @@ const MeetingsPage = () => {
   // Create or update meeting
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // No documents, send as JSON
-    const meetingData = {
-      ...form,
-      agenda,
-      participants,
-      location: '',
-    };
-    const url = editMeeting
-      ? `http://localhost:5000/api/Meetings/${editMeeting._id || editMeeting.id}`
-      : 'http://localhost:5000/api/Meetings';
-    const method = editMeeting ? 'PUT' : 'POST';
-    await authFetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(meetingData),
-    });
-    // Refresh meetings
-    authFetch('http://localhost:5000/api/Meetings')
-      .then(res => res.json())
-      .then(data => setMeetings(data));
-    setShowModal(false);
+    setErrorMsg('');
+    try {
+      const meetingData = {
+        ...form,
+        agenda,
+        participants,
+        location: '',
+      };
+      const url = editMeeting
+        ? `http://localhost:5000/api/Meetings/${editMeeting._id || editMeeting.id}`
+        : 'http://localhost:5000/api/Meetings';
+      const method = editMeeting ? 'PUT' : 'POST';
+      const res = await authFetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(meetingData),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setErrorMsg(data.message || 'Erreur lors de la sauvegarde.');
+        return;
+      }
+      authFetch('http://localhost:5000/api/Meetings')
+        .then(res => res.json())
+        .then(data => setMeetings(data));
+      setShowModal(false);
+    } catch (err) {
+      setErrorMsg('Erreur réseau ou serveur.');
+    }
   };
 
   // Delete meeting
   const handleDelete = async (id) => {
-    await authFetch(`http://localhost:5000/api/Meetings/${id}`, { method: 'DELETE' });
-    authFetch('http://localhost:5000/api/Meetings')
-      .then(res => res.json())
-      .then(data => setMeetings(data));
+    setErrorMsg('');
+    try {
+      const res = await authFetch(`http://localhost:5000/api/Meetings/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json();
+        setErrorMsg(data.message || 'Erreur lors de la suppression.');
+        return;
+      }
+      authFetch('http://localhost:5000/api/Meetings')
+        .then(res => res.json())
+        .then(data => setMeetings(data));
+    } catch (err) {
+      setErrorMsg('Erreur réseau ou serveur.');
+    }
   };
 
   // Handle edit
@@ -103,7 +130,13 @@ const MeetingsPage = () => {
       type: meeting.type,
     });
     setAgenda(meeting.agenda || []);
-    setParticipants(meeting.participants || []);
+    // Ensure participants are always IDs
+    const participantIds = (meeting.participants || []).map(p => {
+      // If it's already an ID, keep it; if it's a name, find the ID
+      const userObj = usersList.find(u => u._id === p || u.id === p || u.name === p || u.nom === p || u.email === p);
+      return userObj ? (userObj._id || userObj.id) : p;
+    });
+    setParticipants(participantIds);
     setShowModal(true);
   };
 
@@ -176,6 +209,10 @@ const MeetingsPage = () => {
             ))}
           </div>
         )}
+        {/* Display error message if present */}
+        {errorMsg && (
+          <div style={{ color: 'red', marginBottom: 16 }}>{errorMsg}</div>
+        )}
         {/* Meeting Detail Modal */}
         {selectedMeeting && (
           <div style={{position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(30,32,38,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
@@ -225,11 +262,13 @@ const MeetingsPage = () => {
                       {(selectedMeeting.participants || []).length === 0 ? (
                         <li style={{color: '#8d99ae'}}>Aucun participant</li>
                       ) : (
-                        (selectedMeeting.participants || []).map((name, idx) => {
-                          const user = usersList.find(u => u.name === name);
+                        (selectedMeeting.participants || []).map((participantId, idx) => {
+                          // Try to find the user by ID
+                          const userObj = usersList.find(u => (u._id === participantId || u.id === participantId));
+                          const displayName = userObj ? (userObj.name || userObj.nom || userObj.email) : participantId;
                           return (
                             <li key={idx} style={{marginBottom: 4}}>
-                              {name} {user ? <span style={{color: '#8d99ae', fontSize: 13}}>({user.type})</span> : null}
+                              {displayName} {userObj ? <span style={{color: '#8d99ae', fontSize: 13}}>({userObj.role || userObj.type})</span> : null}
                             </li>
                           );
                         })
@@ -291,10 +330,10 @@ const MeetingsPage = () => {
                     style={{width: '100%', padding: '0.7rem', borderRadius: 8, border: '2px solid #e0e0e0', fontSize: 16, minHeight: 80, background: '#f8f9fa'}}
                   >
                     {usersList.map(user => {
-                      // Support both 'name' and 'nom' fields for user display
+                      // Use user ID as value, display name
                       const displayName = user.name || user.nom || user.email || 'Utilisateur inconnu';
                       return (
-                        <option key={user.id || user._id || user.email} value={displayName}>
+                        <option key={user._id || user.id || user.email} value={user._id || user.id}>
                           {displayName}
                         </option>
                       );
