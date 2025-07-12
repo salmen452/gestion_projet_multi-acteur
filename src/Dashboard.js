@@ -219,7 +219,12 @@ const Dashboard = () => {
         <div className="dashboard-grid">
           <UpcomingMeetings meetings={meetingsData} />
           {/* Pass only the top 3 high-priority actions to ActionItems */}
-          <ActionItems actions={actionsData.filter(a => a.priority === 'Haute').slice(0, 3)} />
+          <ActionItems actions={
+            actionsData
+              .filter(a => a.priority === 'Haute')
+              .filter(a => isCoordinator || (user && (a.participants || []).includes(user._id || user.id)))
+              .slice(0, 3)
+          } />
         </div>
 
         <div style={{display: 'flex', gap: 32, flexWrap: 'wrap', justifyContent: 'center', marginTop: 40}}>

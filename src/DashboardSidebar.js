@@ -33,10 +33,6 @@ const DashboardSidebar = ({ onParametreClick }) => {
           <FaCog className="nav-icon" />
           <span>Paramètres</span>
         </div>
-        <div className="nav-item">
-          <FaQuestionCircle className="nav-icon" />
-          <span>Aide & Support</span>
-        </div>
       </div>
       
       <div className="sidebar-footer">
