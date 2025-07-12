@@ -39,6 +39,7 @@ const ActionsPage = () => {
     description: '',
     priority: 'Moyenne',
     dueDate: '',
+    status: 'À faire',
   });
   const [usersList, setUsersList] = useState([]);
   const [participants, setParticipants] = useState([]);
@@ -59,7 +60,12 @@ const ActionsPage = () => {
       .catch(() => setUsersList([]));
   }, []);
 
-  const filteredActions = filter === 'all' ? actions : actions.filter(a => a.status === filter);
+  // Filter actions based on user role
+  let visibleActions = actions;
+  if (!isCoordinator && user) {
+    visibleActions = actions.filter(a => (a.participants || []).includes(user._id || user.id));
+  }
+  const filteredActions = filter === 'all' ? visibleActions : visibleActions.filter(a => a.status === filter);
 
   // Count for summary cards
   const summary = {
@@ -76,7 +82,7 @@ const ActionsPage = () => {
 
   const handleOpenModal = () => {
     setEditAction(null);
-    setForm({ title: '', description: '', priority: 'Moyenne', dueDate: '' });
+    setForm({ title: '', description: '', priority: 'Moyenne', dueDate: '', status: 'À faire' });
     setParticipants([]);
     setShowModal(true);
   };
@@ -88,6 +94,7 @@ const ActionsPage = () => {
       description: action.description,
       priority: action.priority,
       dueDate: action.dueDate,
+      status: action.status || 'À faire',
     });
     setParticipants(action.participants || []);
     setShowModal(true);
@@ -101,7 +108,7 @@ const ActionsPage = () => {
       dueDate: form.dueDate,
       priority: form.priority,
       participants,
-      status: editAction ? editAction.status : 'À faire',
+      status: form.status || (editAction ? editAction.status : 'À faire'),
     };
     if (editAction) {
       // PATCH update
@@ -123,7 +130,7 @@ const ActionsPage = () => {
       setActions([...actions, savedAction]);
     }
     setShowModal(false);
-    setForm({ title: '', description: '', priority: 'Moyenne', dueDate: '' });
+    setForm({ title: '', description: '', priority: 'Moyenne', dueDate: '', status: 'À faire' });
     setParticipants([]);
     setEditAction(null);
   };
@@ -197,6 +204,17 @@ const ActionsPage = () => {
                     <label style={{fontWeight: 500, fontSize: 15}}>Date d'échéance</label>
                     <input name="dueDate" value={form.dueDate} onChange={handleFormChange} type="date" required style={{width: '100%', padding: '0.6rem', borderRadius: 6, border: '2px solid #e0e0e0', fontSize: 16, marginTop: 4}} />
                   </div>
+                  {/* Status dropdown for coordinators when editing */}
+                  {isCoordinator && editAction && (
+                    <div style={{flex: 1}}>
+                      <label style={{fontWeight: 500, fontSize: 15 , marginLeft: 10}}>Statut</label>
+                      <select name="status" value={form.status} onChange={handleFormChange} style={{width: '100%', padding: '0.7rem', borderRadius: 5, border: '2px solid #e0e0e0', fontSize: 16, marginTop: 5, marginLeft: 10}}>
+                        <option value="À faire">À faire</option>
+                        <option value="En cours">En cours</option>
+                        <option value="Terminées">Terminées</option>
+                      </select>
+                    </div>
+                  )}
                 </div>
                 {/* Add participants multi-select to the modal */}
                 <div style={{marginBottom: 16}}>
