@@ -21,6 +21,19 @@ const GroupDetail = () => {
   );
 };
 
+const AdminRedirect = () => {
+  const isAuthenticated = () => {
+    const token = localStorage.getItem('adminToken');
+    return !!token;
+  };
+
+  if (isAuthenticated()) {
+    return <Navigate to="/admin/dashboard" replace />;
+  } else {
+    return <Navigate to="/admin/login" replace />;
+  }
+};
+
 function App() {
   return (
     <Router>
@@ -36,6 +49,7 @@ function App() {
         } />
 
         {/* Admin routes */}
+        <Route path="/admin" element={<AdminRedirect />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
           path="/admin/*"

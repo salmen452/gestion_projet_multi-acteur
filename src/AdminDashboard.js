@@ -52,7 +52,7 @@ const AdminDashboard = () => {
             className="action-button"
             style={{ width: '100%', background: '#F44336', color: '#fff', marginBottom: '1rem' }}
             onClick={() => {
-              localStorage.removeItem('token');
+              localStorage.removeItem('adminToken');
               window.location.href = 'http://localhost:3000/admin/login';
             }}
           >
