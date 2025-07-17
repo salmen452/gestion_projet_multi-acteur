@@ -220,7 +220,7 @@ const DocumentsPage = () => {
         ) : (
           <div style={{display: 'flex', gap: 18, flexWrap: 'wrap'}}>
             {filteredDocs.map(doc => (
-              <div key={doc._id || doc.id} style={{background: '#fff', border: '1.5px solid #e0e0e0', borderRadius: 16, padding: '1.2rem 1.5rem', minWidth: 280, maxWidth: 340, flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: 8, position: 'relative'}}>
+              <div key={doc._id || doc.id} className="document-card" style={{padding: '1.2rem 1.5rem', minWidth: 280, maxWidth: 340, flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: 8, position: 'relative'}}>
                 <div style={{fontWeight: 700, fontSize: 18, marginBottom: 2}}>{doc.name}</div>
                 <div style={{color: '#8d99ae', fontSize: 15, marginBottom: 2}}>
                   Fichier: {doc.fileName || (typeof doc.file === 'string' ? doc.file : doc.name) || 'Document'}

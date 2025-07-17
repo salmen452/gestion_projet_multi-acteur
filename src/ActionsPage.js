@@ -297,7 +297,7 @@ const ActionsPage = () => {
             </div>
           ) : (
             filteredActions.map(action => (
-              <div key={action._id || action.id} style={{background: '#faf9fb', border: '1.5px solid #e0e0e0', borderRadius: 16, padding: '1.2rem 1.5rem', marginBottom: 18, boxShadow: 'none', display: 'flex', flexDirection: 'column', gap: 8, position: 'relative'}}>
+              <div key={action._id || action.id} className="action-card" style={{padding: '1.2rem 1.5rem', marginBottom: 18, display: 'flex', flexDirection: 'column', gap: 8, position: 'relative'}}>
                 <div style={{display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'space-between'}}>
                   <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
                     <FaInfoCircle style={{marginRight: 8, color: '#444'}} />
