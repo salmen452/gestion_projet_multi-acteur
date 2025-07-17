@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { FaUsers, FaChartLine, FaHistory, FaCog, FaBars, FaTimes } from 'react-icons/fa';
 import UserManagement from './components/admin/UserManagement';
-import SystemMonitoring from './components/admin/SystemMonitoring';
-import ActivityLogs from './components/admin/ActivityLogs';
 import SystemSettings from './components/admin/SystemSettings';
-import WorkGroups from './components/admin/WorkGroups';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -12,8 +9,7 @@ const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const sections = [
-    { id: 'users', label: 'Gestion des acteurs', icon: <FaUsers /> },
-    { id: 'settings', label: 'Paramètres', icon: <FaCog /> }
+    { id: 'users', label: 'Gestion des acteurs', icon: <FaUsers /> }
   ];
 
   const renderContent = () => {
@@ -64,9 +60,6 @@ const AdminDashboard = () => {
       </div>
 
       <main className="admin-main">
-        <header className="admin-header">
-          <h1>{sections.find(s => s.id === activeSection)?.label}</h1>
-        </header>
         <div className="admin-content">
           {renderContent()}
         </div>

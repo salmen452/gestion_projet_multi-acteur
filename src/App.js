@@ -10,6 +10,7 @@ import ProtectedRoute from './components/admin/ProtectedRoute';
 import MeetingsPage from './MeetingsPage'; // Add this
 import ActionsPage from './ActionsPage'; // Add this
 import DocumentsPage from './DocumentsPage'; // Add this
+import UserActionsStats from './UserActionsStats';
 import './App.css';
 
 const GroupDetail = () => {
@@ -63,6 +64,7 @@ function App() {
         {/* Add the new routes */}
         <Route path="/meetings" element={<MeetingsPage />} />
         <Route path="/actions" element={<ActionsPage />} />
+        <Route path="/user-actions-stats" element={<UserActionsStats />} />
         <Route path="/workgroups/:id" element={<GroupDetail />} />
         <Route path="/documents" element={<DocumentsPage />} />
       </Routes>

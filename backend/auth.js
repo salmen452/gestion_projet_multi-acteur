@@ -389,4 +389,38 @@ router.delete('/Users/:id', async (req, res) => {
   }
 });
 
+// --- USER ACTIONS STATISTICS ---
+// Get number of actions assigned to each user, with full name
+router.get('/user-actions-stats', async (req, res) => {
+  try {
+    // Get all actions
+    const actions = await Action.find({});
+    // Count actions per participant
+    const userActionCounts = {};
+    actions.forEach(action => {
+      (action.participants || []).forEach(userId => {
+        userActionCounts[userId] = (userActionCounts[userId] || 0) + 1;
+      });
+    });
+    // Get all user IDs that have at least one action
+    const userIds = Object.keys(userActionCounts);
+    // Get user info for these IDs
+    const users = await User.find({ _id: { $in: userIds } }, 'name');
+    // Map userId to name
+    const userIdToName = {};
+    users.forEach(user => {
+      userIdToName[user._id.toString()] = user.name;
+    });
+    // Build result array
+    const result = userIds.map(userId => ({
+      userId,
+      fullName: userIdToName[userId] || 'Utilisateur inconnu',
+      actionCount: userActionCounts[userId]
+    }));
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Server error.' });
+  }
+});
+
 module.exports = router;
