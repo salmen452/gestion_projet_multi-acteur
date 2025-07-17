@@ -23,6 +23,7 @@ const DashboardHeader = () => {
   const handleLogout = (e) => {
     e.stopPropagation();
     localStorage.removeItem('user');
+    localStorage.removeItem('token'); // Remove token on logout
     navigate('/login');
   };
 

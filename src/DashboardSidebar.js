@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'; // Add this import
 import './Dashboard.css';
-import { FaHome, FaCalendarAlt, FaTasks, FaUsers, FaFileAlt, FaCog, FaQuestionCircle } from 'react-icons/fa';
+import { FaHome, FaCalendarAlt, FaTasks, FaUsers, FaFileAlt, FaCog, FaQuestionCircle, FaChartBar } from 'react-icons/fa';
 
 const DashboardSidebar = ({ onParametreClick }) => {
   return (
@@ -27,6 +27,10 @@ const DashboardSidebar = ({ onParametreClick }) => {
         <NavLink to="/documents" className="nav-item" activeClassName="active">
           <FaFileAlt className="nav-icon" />
           <span>Documents</span>
+        </NavLink>
+        <NavLink to="/user-actions-stats" className="nav-item" activeClassName="active">
+          <FaChartBar className="nav-icon" />
+          <span>Statistiques</span>
         </NavLink>
         <div className="nav-divider"></div>
         <div className="nav-item" style={{cursor: 'pointer'}} onClick={onParametreClick}>
