@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Users & Roles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .ppt-slide {
+                @apply relative w-[1280px] min-h-[720px] mx-auto box-border overflow-hidden
+            }
+        }
+    </style>
+    <style>body {
+    font-family: "Inter", sans-serif;
+    background: #0f1419
+    }
+.tech-accent {
+    color: #37DCF2
+    }
+.tech-bg {
+    background-color: #162235
+    }
+.code-font {
+    font-family: "JetBrains Mono", monospace
+    }</style>
+<style>.material-icons {
+    width: 1em
+    }</style><style>.material-icons {
+    direction: rtl
+    }</style></head>
+<body>
+    <div class="ppt-slide tech-bg relative flex flex-col">
+        <!-- Subtle Grid Pattern -->
+        <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(#37DCF2 1px, transparent 1px), linear-gradient(90deg, #37DCF2 1px, transparent 1px);
+background-size: 50px 50px"></div>
+        
+        <!-- Header -->
+        <div class="relative z-10 h-[85px] px-[70px] flex items-center border-b border-white/10">
+            <div class="code-font text-sm text-[#37DCF2] mr-4">
+                <i class="material-icons text-base align-middle">group</i>
+            </div>
+            <h1 class="text-[40px] font-bold text-white">Users & Roles</h1>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="relative z-10 flex-grow flex px-[70px] py-12">
+            <!-- Left Section -->
+            <div class="w-[35%] pr-10 flex flex-col justify-center">
+                <h2 class="text-white text-[32px] font-semibold mb-6">Three User Types</h2>
+                <p class="text-gray-300 text-[24px] leading-relaxed mb-6">
+                    Each role has specific permissions designed to ensure efficient collaboration and proper system management.
+                </p>
+                <div class="bg-gradient-to-r from-[#37DCF2]/10 to-transparent border-l-4 border-[#37DCF2] p-6">
+                    <div class="flex items-center space-x-3 text-[24px] text-gray-300">
+                        <i class="material-icons text-[#37DCF2] text-2xl">verified_user</i>
+                        <span>Role-Based Access Control</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Section - User Roles -->
+            <div class="w-[65%] pl-10 border-l border-white/10 flex items-center">
+                <div class="grid grid-cols-3 gap-6 w-full">
+                    <!-- Administrator Card -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 flex flex-col">
+                        <div class="flex justify-center mb-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-[#37DCF2]/20 to-[#37DCF2]/5 rounded-full flex items-center justify-center">
+                                <i class="material-icons text-[#37DCF2] text-4xl">admin_panel_settings</i>
+                            </div>
+                        </div>
+                        <h3 class="text-white text-[26px] font-bold text-center mb-4">Administrator</h3>
+                        <div class="w-12 h-0.5 bg-[#37DCF2] mx-auto mb-4"></div>
+                        <div class="space-y-3 flex-grow">
+                            <div class="flex items-start space-x-2 text-[22px] text-gray-300">
+                                <i class="material-icons text-[#37DCF2] text-lg mt-0.5">check</i>
+                                <span>Separate admin panel</span>
+                            </div>
+                            <div class="flex items-start space-x-2 text-[22px] text-gray-300">
+                                <i class="material-icons text-[#37DCF2] text-lg mt-0.5">check</i>
+                                <span>User management</span>
+                            </div>
+                            <div class="flex items-start space-x-2 text-[22px] text-gray-300">
+                                <i class="material-icons text-[#37DCF2] text-lg mt-0.5">check</i>
+                                <span>System monitoring</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Coordinator Card -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 flex flex-col">
+                        <div class="flex justify-center mb-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-[#37DCF2]/20 to-[#37DCF2]/5 rounded-full flex items-center justify-center">
+                                <i class="material-icons text-[#37DCF2] text-4xl">manage_accounts</i>
+                            </div>
+                        </div>
+                        <h3 class="text-white text-[26px] font-bold text-center mb-4">Coordinator</h3>
+                        <div class="w-12 h-0.5 bg-[#37DCF2] mx-auto mb-4"></div>
+                        <div class="space-y-3 flex-grow">
+                            <div class="flex items-start space-x-2 text-[22px] text-gray-300">
+                                <i class="material-icons text-[#37DCF2] text-lg mt-0.5">check</i>
+                                <span>Create projects</span>
+                            </div>
+                            <div class="flex items-start space-x-2 text-[22px] text-gray-300">
+                                <i class="material-icons text-[#37DCF2] text-lg mt-0.5">check</i>
+                                <span>Manage actions</span>
+                            </div>
+                            <div class="flex items-start space-x-2 text-[22px] text-gray-300">
+                                <i class="material-icons text-[#37DCF2] text-lg mt-0.5">check</i>
+                                <span>Schedule meetings</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Member Card -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 flex flex-col">
+                        <div class="flex justify-center mb-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-[#37DCF2]/20 to-[#37DCF2]/5 rounded-full flex items-center justify-center">
+                                <i class="material-icons text-[#37DCF2] text-4xl">person</i>
+                            </div>
+                        </div>
+                        <h3 class="text-white text-[26px] font-bold text-center mb-4">Member</h3>
+                        <div class="w-12 h-0.5 bg-[#37DCF2] mx-auto mb-4"></div>
+                        <div class="space-y-3 flex-grow">
+                            <div class="flex items-start space-x-2 text-[22px] text-gray-300">
+                                <i class="material-icons text-[#37DCF2] text-lg mt-0.5">check</i>
+                                <span>View projects</span>
+                            </div>
+                            <div class="flex items-start space-x-2 text-[22px] text-gray-300">
+                                <i class="material-icons text-[#37DCF2] text-lg mt-0.5">check</i>
+                                <span>Complete tasks</span>
+                            </div>
+                            <div class="flex items-start space-x-2 text-[22px] text-gray-300">
+                                <i class="material-icons text-[#37DCF2] text-lg mt-0.5">check</i>
+                                <span>Attend meetings</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Accent Line -->
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#37DCF2] via-white/30 to-[#37DCF2]"></div>
+    </div>
+</body>
+</html>

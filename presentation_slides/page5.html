@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Real-World Scenario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .ppt-slide {
+                @apply relative w-[1280px] min-h-[720px] mx-auto box-border overflow-hidden
+            }
+        }
+    </style>
+    <style>body {
+    font-family: "Inter", sans-serif;
+    background: #0f1419
+    }
+.tech-accent {
+    color: #37DCF2
+    }
+.tech-bg {
+    background-color: #162235
+    }
+.code-font {
+    font-family: "JetBrains Mono", monospace
+    }</style>
+<style>.material-icons {
+    width: 1em
+    }</style><style>.material-icons {
+    direction: rtl
+    }</style></head>
+<body>
+    <div class="ppt-slide tech-bg relative flex flex-col">
+        <!-- Subtle Grid Pattern -->
+        <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(#37DCF2 1px, transparent 1px), linear-gradient(90deg, #37DCF2 1px, transparent 1px);
+background-size: 50px 50px"></div>
+        
+        <!-- Header -->
+        <div class="relative z-10 h-[85px] px-[70px] flex items-center border-b border-white/10">
+            <div class="code-font text-sm text-[#37DCF2] mr-4">
+                <i class="material-icons text-base align-middle">scenario</i>
+            </div>
+            <h1 class="text-[40px] font-bold text-white">A Real-World Scenario</h1>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="relative z-10 flex-grow flex px-[70px] py-6">
+            <!-- Single Column Timeline Scenario -->
+            <div class="w-full flex flex-col justify-center">
+                <!-- Setup Context -->
+                <div class="mb-4">
+                    <div class="flex items-center mb-2">
+                        <div class="w-1 h-8 bg-[#37DCF2] mr-3"></div>
+                        <span class="text-[#37DCF2] text-[18px] font-medium tracking-wide">THE SITUATION</span>
+                    </div>
+                    <h2 class="text-white text-[28px] font-bold leading-tight">
+                        A team of 15+ people managing a cross-functional project with distributed teams
+                    </h2>
+                </div>
+                
+                <!-- Timeline/Scenario Flow -->
+                <div class="grid grid-cols-4 gap-3 mb-5">
+                    <!-- Day 1 -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3">
+                        <div class="flex items-center mb-2">
+                            <div class="w-9 h-9 bg-[#37DCF2]/20 rounded-full flex items-center justify-center mr-2">
+                                <i class="material-icons text-[#37DCF2] text-lg">today</i>
+                            </div>
+                            <h3 class="text-[#37DCF2] text-[18px] font-semibold">Monday</h3>
+                        </div>
+                        <p class="text-gray-300 text-[16px] leading-relaxed">
+                            Manager assigns tasks via email and Slack. Different team members use different tools. No central record.
+                        </p>
+                    </div>
+                    
+                    <!-- Day 2-3 -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3">
+                        <div class="flex items-center mb-2">
+                            <div class="w-9 h-9 bg-orange-400/20 rounded-full flex items-center justify-center mr-2">
+                                <i class="material-icons text-orange-400 text-lg">schedule</i>
+                            </div>
+                            <h3 class="text-orange-400 text-[18px] font-semibold">Tuesday-Wed</h3>
+                        </div>
+                        <p class="text-gray-300 text-[16px] leading-relaxed">
+                            Team members ask "what's my task again?" Multiple emails sent with same question. Time wasted on clarifications.
+                        </p>
+                    </div>
+                    
+                    <!-- Mid-Week -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3">
+                        <div class="flex items-center mb-2">
+                            <div class="w-9 h-9 bg-red-400/20 rounded-full flex items-center justify-center mr-2">
+                                <i class="material-icons text-red-400 text-lg">warning</i>
+                            </div>
+                            <h3 class="text-red-400 text-[18px] font-semibold">Thursday</h3>
+                        </div>
+                        <p class="text-gray-300 text-[16px] leading-relaxed">
+                            Coordinator still searching for status updates. Meeting notes lost. Document version control nightmare.
+                        </p>
+                    </div>
+                    
+                    <!-- End of Week -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3">
+                        <div class="flex items-center mb-2">
+                            <div class="w-9 h-9 bg-red-500/20 rounded-full flex items-center justify-center mr-2">
+                                <i class="material-icons text-red-500 text-lg">error</i>
+                            </div>
+                            <h3 class="text-red-500 text-[18px] font-semibold">Friday</h3>
+                        </div>
+                        <p class="text-gray-300 text-[16px] leading-relaxed">
+                            Critical deadline missed. No one knew who was responsible. Project delayed, budget impacted, team frustrated.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Impact Summary -->
+                <div class="bg-gradient-to-r from-red-500/10 to-transparent border-l-4 border-red-400 rounded-xl p-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-11 h-11 bg-red-400/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="material-icons text-red-400 text-2xl">trending_down</i>
+                        </div>
+                        <div>
+                            <h3 class="text-white text-[22px] font-semibold mb-1">The Result</h3>
+                            <p class="text-gray-300 text-[18px] leading-relaxed">
+                                Project coordinator spent <span class="text-red-400 font-semibold">30% of their time</span> chasing information. Team morale dropped. Strategic work delayed. Resources wasted.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

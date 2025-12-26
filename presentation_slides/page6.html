@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>The Solution</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .ppt-slide {
+                @apply relative w-[1280px] min-h-[720px] mx-auto box-border overflow-hidden
+            }
+        }
+    </style>
+    <style>body {
+    font-family: "Inter", sans-serif;
+    background: #0f1419
+    }
+.tech-accent {
+    color: #37DCF2
+    }
+.tech-bg {
+    background-color: #162235
+    }
+.code-font {
+    font-family: "JetBrains Mono", monospace
+    }</style>
+<style>.material-icons {
+    width: 1em
+    }</style><style>.material-icons {
+    direction: rtl
+    }</style></head>
+<body>
+    <div class="ppt-slide tech-bg relative flex flex-col">
+        <!-- Subtle Grid Pattern -->
+        <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(#37DCF2 1px, transparent 1px), linear-gradient(90deg, #37DCF2 1px, transparent 1px);
+background-size: 50px 50px"></div>
+        
+        <!-- Header -->
+        <div class="relative z-10 h-[85px] px-[70px] flex items-center border-b border-white/10">
+            <div class="code-font text-sm text-[#37DCF2] mr-4">
+                <i class="material-icons text-base align-middle">lightbulb</i>
+            </div>
+            <h1 class="text-[40px] font-bold text-white">The Solution</h1>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="relative z-10 flex-grow flex px-[70px] py-5">
+            <!-- Left Section - Solution Overview -->
+            <div class="w-[50%] pr-6 flex flex-col justify-center">
+                <div class="mb-4">
+                    <div class="flex items-center mb-2">
+                        <div class="w-1 h-8 bg-[#37DCF2] mr-3"></div>
+                        <span class="text-[#37DCF2] text-[18px] font-medium tracking-wide">UNIFIED PLATFORM</span>
+                    </div>
+                    <h2 class="text-white text-[28px] font-bold leading-tight">
+                        Centralized Project Management Portal
+                    </h2>
+                </div>
+
+                <div class="space-y-2">
+                    <!-- Feature 1 -->
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="material-icons text-[#37DCF2] text-lg">check_circle</i>
+                        </div>
+                        <div>
+                            <h3 class="text-white text-[18px] font-semibold">Centralized Dashboard</h3>
+                            <p class="text-gray-400 text-[15px]">All tasks, meetings & documents in one place</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="material-icons text-[#37DCF2] text-lg">visibility</i>
+                        </div>
+                        <div>
+                            <h3 class="text-white text-[18px] font-semibold">Real-Time Visibility</h3>
+                            <p class="text-gray-400 text-[15px]">Track progress across all team members</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="material-icons text-[#37DCF2] text-lg">people</i>
+                        </div>
+                        <div>
+                            <h3 class="text-white text-[18px] font-semibold">Team Collaboration</h3>
+                            <p class="text-gray-400 text-[15px]">Seamless communication & coordination</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="material-icons text-[#37DCF2] text-lg">folder_shared</i>
+                        </div>
+                        <div>
+                            <h3 class="text-white text-[18px] font-semibold">Document Management</h3>
+                            <p class="text-gray-400 text-[15px]">Store & organize all project files centrally</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Section - Before/After Comparison -->
+            <div class="w-[50%] pl-6 border-l border-white/10 flex flex-col justify-center">
+                <h3 class="text-white text-[20px] font-semibold mb-3 text-center">Impact Transformation</h3>
+
+                <!-- Before -->
+                <div class="bg-red-500/10 border border-red-400/30 rounded-lg p-3 mb-3">
+                    <div class="flex items-center mb-2">
+                        <i class="material-icons text-red-400 text-xl mr-2">close</i>
+                        <span class="text-red-400 font-semibold text-[16px]">WITHOUT Solution</span>
+                    </div>
+                    <ul class="space-y-1 text-gray-300 text-[14px]">
+                        <li>❌ Information scattered across tools</li>
+                        <li>❌ 30% time on coordination</li>
+                        <li>❌ Missed deadlines & confusion</li>
+                        <li>❌ Low team morale</li>
+                        <li>❌ Delayed decision-making</li>
+                    </ul>
+                </div>
+
+                <!-- After -->
+                <div class="bg-green-500/10 border border-green-400/30 rounded-lg p-3">
+                    <div class="flex items-center mb-2">
+                        <i class="material-icons text-green-400 text-xl mr-2">check</i>
+                        <span class="text-green-400 font-semibold text-[16px]">WITH Our Portal</span>
+                    </div>
+                    <ul class="space-y-1 text-gray-300 text-[14px]">
+                        <li>✅ Single source of truth</li>
+                        <li>✅ Coordinator focused on strategy</li>
+                        <li>✅ Clear accountability & deadlines</li>
+                        <li>✅ Engaged & productive teams</li>
+                        <li>✅ Data-driven decisions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

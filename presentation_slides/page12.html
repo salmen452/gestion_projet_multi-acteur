@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>System Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .ppt-slide {
+                @apply relative w-[1280px] min-h-[720px] mx-auto box-border overflow-hidden
+            }
+        }
+    </style>
+    <style>body {
+    font-family: "Inter", sans-serif;
+    background: #0f1419
+    }
+.tech-accent {
+    color: #37DCF2
+    }
+.tech-bg {
+    background-color: #162235
+    }
+.code-font {
+    font-family: "JetBrains Mono", monospace
+    }</style>
+<style>.material-icons {
+    width: 1em
+    }</style><style>.material-icons {
+    direction: rtl
+    }</style></head>
+<body>
+    <div class="ppt-slide tech-bg relative flex flex-col">
+        <!-- Subtle Grid Pattern -->
+        <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(#37DCF2 1px, transparent 1px), linear-gradient(90deg, #37DCF2 1px, transparent 1px);
+background-size: 50px 50px"></div>
+        
+        <!-- Header -->
+        <div class="relative z-10 h-[78px] px-[64px] flex items-center border-b border-white/10">
+            <div class="code-font text-sm text-[#37DCF2] mr-4">
+                <i class="material-icons text-base align-middle">alt_route</i>
+            </div>
+            <h1 class="text-[40px] font-bold text-white">API & Data Flow</h1>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="relative z-10 flex-grow flex px-[64px] py-5">
+            <!-- Left Section - Request Flow -->
+            <div class="w-[50%] pr-5 flex flex-col justify-center">
+                <div class="mb-3">
+                    <div class="flex items-center mb-2">
+                        <div class="w-1 h-8 bg-[#37DCF2] mr-3"></div>
+                        <span class="text-[#37DCF2] text-[16px] font-medium tracking-wide">REQUEST FLOW</span>
+                    </div>
+                    <h2 class="text-white text-[26px] font-bold leading-tight">
+                        Client-Server Communication
+                    </h2>
+                </div>
+
+                <!-- Flow Steps -->
+                <div class="space-y-2 mb-3">
+                    <!-- Step 1 -->
+                    <div class="flex items-center space-x-3">
+                        <div class="flex-shrink-0 w-8 h-8 bg-[#37DCF2] rounded-full flex items-center justify-center text-white font-bold text-[14px]">1</div>
+                        <div class="flex-1 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white text-[15px] font-semibold">User Action</span>
+                                <span class="text-gray-400 text-[13px]">React Component</span>
+                            </div>
+                        </div>
+                        <i class="material-icons text-[#37DCF2] text-lg">arrow_forward</i>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex items-center space-x-3">
+                        <div class="flex-shrink-0 w-8 h-8 bg-[#37DCF2] rounded-full flex items-center justify-center text-white font-bold text-[14px]">2</div>
+                        <div class="flex-1 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white text-[15px] font-semibold">HTTP Request</span>
+                                <span class="text-gray-400 text-[13px]">authFetch + JWT</span>
+                            </div>
+                        </div>
+                        <i class="material-icons text-[#37DCF2] text-lg">arrow_forward</i>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex items-center space-x-3">
+                        <div class="flex-shrink-0 w-8 h-8 bg-[#37DCF2] rounded-full flex items-center justify-center text-white font-bold text-[14px]">3</div>
+                        <div class="flex-1 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white text-[15px] font-semibold">Authentication</span>
+                                <span class="text-gray-400 text-[13px]">Middleware</span>
+                            </div>
+                        </div>
+                        <i class="material-icons text-[#37DCF2] text-lg">arrow_forward</i>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="flex items-center space-x-3">
+                        <div class="flex-shrink-0 w-8 h-8 bg-[#37DCF2] rounded-full flex items-center justify-center text-white font-bold text-[14px]">4</div>
+                        <div class="flex-1 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white text-[15px] font-semibold">API Route</span>
+                                <span class="text-gray-400 text-[13px]">Express Handler</span>
+                            </div>
+                        </div>
+                        <i class="material-icons text-[#37DCF2] text-lg">arrow_forward</i>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="flex items-center space-x-3">
+                        <div class="flex-shrink-0 w-8 h-8 bg-[#37DCF2] rounded-full flex items-center justify-center text-white font-bold text-[14px]">5</div>
+                        <div class="flex-1 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white text-[15px] font-semibold">Database Query</span>
+                                <span class="text-gray-400 text-[13px]">Mongoose ODM</span>
+                            </div>
+                        </div>
+                        <i class="material-icons text-[#37DCF2] text-lg">arrow_forward</i>
+                    </div>
+
+                    <!-- Step 6 -->
+                    <div class="flex items-center space-x-3">
+                        <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-[14px]">6</div>
+                        <div class="flex-1 bg-green-500/10 backdrop-blur-sm border border-green-400/30 rounded-lg p-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white text-[15px] font-semibold">JSON Response</span>
+                                <span class="text-green-400 text-[13px]">Data Returned</span>
+                            </div>
+                        </div>
+                        <i class="material-icons text-green-400 text-lg">arrow_back</i>
+                    </div>
+                </div>
+
+                <!-- Auth Note -->
+                <div class="bg-gradient-to-r from-yellow-500/10 to-transparent border-l-4 border-yellow-400 p-3 rounded-lg">
+                    <p class="text-gray-300 text-[13px] leading-relaxed">
+                        <span class="text-yellow-400 font-semibold">🔐 Authentication:</span> JWT token stored in localStorage, sent in Authorization header for protected routes
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Section - API Endpoints -->
+            <div class="w-[50%] pl-5 border-l border-white/10 flex flex-col justify-center">
+                <h3 class="text-white text-[20px] font-semibold mb-3">REST API Endpoints</h3>
+
+                <!-- Users API -->
+                <div class="mb-2">
+                    <div class="flex items-center mb-1">
+                        <i class="material-icons text-blue-400 text-lg mr-2">person</i>
+                        <h4 class="text-blue-400 font-semibold text-[16px]">/api/Users</h4>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1 ml-7">
+                        <div class="bg-green-500/10 border border-green-400/30 rounded px-2 py-1">
+                            <span class="text-green-400 font-mono text-[12px]">GET</span>
+                            <span class="text-gray-400 text-[11px] ml-1">List all</span>
+                        </div>
+                        <div class="bg-blue-500/10 border border-blue-400/30 rounded px-2 py-1">
+                            <span class="text-blue-400 font-mono text-[12px]">POST</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Create</span>
+                        </div>
+                        <div class="bg-yellow-500/10 border border-yellow-400/30 rounded px-2 py-1">
+                            <span class="text-yellow-400 font-mono text-[12px]">PUT</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Update</span>
+                        </div>
+                        <div class="bg-red-500/10 border border-red-400/30 rounded px-2 py-1">
+                            <span class="text-red-400 font-mono text-[12px]">DELETE</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Remove</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions API -->
+                <div class="mb-2">
+                    <div class="flex items-center mb-1">
+                        <i class="material-icons text-yellow-400 text-lg mr-2">task</i>
+                        <h4 class="text-yellow-400 font-semibold text-[16px]">/api/Actions</h4>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1 ml-7">
+                        <div class="bg-green-500/10 border border-green-400/30 rounded px-2 py-1">
+                            <span class="text-green-400 font-mono text-[12px]">GET</span>
+                            <span class="text-gray-400 text-[11px] ml-1">List all</span>
+                        </div>
+                        <div class="bg-blue-500/10 border border-blue-400/30 rounded px-2 py-1">
+                            <span class="text-blue-400 font-mono text-[12px]">POST</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Create</span>
+                        </div>
+                        <div class="bg-yellow-500/10 border border-yellow-400/30 rounded px-2 py-1">
+                            <span class="text-yellow-400 font-mono text-[12px]">PUT</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Update</span>
+                        </div>
+                        <div class="bg-red-500/10 border border-red-400/30 rounded px-2 py-1">
+                            <span class="text-red-400 font-mono text-[12px]">DELETE</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Remove</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meetings API -->
+                <div class="mb-2">
+                    <div class="flex items-center mb-1">
+                        <i class="material-icons text-red-400 text-lg mr-2">event</i>
+                        <h4 class="text-red-400 font-semibold text-[16px]">/api/Meetings</h4>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1 ml-7">
+                        <div class="bg-green-500/10 border border-green-400/30 rounded px-2 py-1">
+                            <span class="text-green-400 font-mono text-[12px]">GET</span>
+                            <span class="text-gray-400 text-[11px] ml-1">List all</span>
+                        </div>
+                        <div class="bg-blue-500/10 border border-blue-400/30 rounded px-2 py-1">
+                            <span class="text-blue-400 font-mono text-[12px]">POST</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Create</span>
+                        </div>
+                        <div class="bg-yellow-500/10 border border-yellow-400/30 rounded px-2 py-1">
+                            <span class="text-yellow-400 font-mono text-[12px]">PUT</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Update</span>
+                        </div>
+                        <div class="bg-red-500/10 border border-red-400/30 rounded px-2 py-1">
+                            <span class="text-red-400 font-mono text-[12px]">DELETE</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Remove</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents API -->
+                <div class="mb-3">
+                    <div class="flex items-center mb-1">
+                        <i class="material-icons text-green-400 text-lg mr-2">description</i>
+                        <h4 class="text-green-400 font-semibold text-[16px]">/api/Documents</h4>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1 ml-7">
+                        <div class="bg-green-500/10 border border-green-400/30 rounded px-2 py-1">
+                            <span class="text-green-400 font-mono text-[12px]">GET</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Download</span>
+                        </div>
+                        <div class="bg-blue-500/10 border border-blue-400/30 rounded px-2 py-1">
+                            <span class="text-blue-400 font-mono text-[12px]">POST</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Upload</span>
+                        </div>
+                        <div class="bg-yellow-500/10 border border-yellow-400/30 rounded px-2 py-1">
+                            <span class="text-yellow-400 font-mono text-[12px]">PUT</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Update</span>
+                        </div>
+                        <div class="bg-red-500/10 border border-red-400/30 rounded px-2 py-1">
+                            <span class="text-red-400 font-mono text-[12px]">DELETE</span>
+                            <span class="text-gray-400 text-[11px] ml-1">Remove</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CORS Note -->
+                <div class="bg-gradient-to-r from-[#37DCF2]/10 to-transparent border-l-4 border-[#37DCF2] p-3 rounded-lg">
+                    <p class="text-gray-300 text-[13px] leading-relaxed">
+                        <span class="text-[#37DCF2] font-semibold">🌐 CORS:</span> Cross-Origin enabled for localhost:3000. All endpoints require JWT except /signup and /login
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Accent Line -->
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#37DCF2] via-white/30 to-[#37DCF2]"></div>
+    </div>
+</body>
+</html>

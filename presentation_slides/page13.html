@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Database Design</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .ppt-slide {
+                @apply relative w-[1280px] h-[720px] mx-auto box-border overflow-hidden
+            }
+        }
+    </style>
+    <style>body {
+    font-family: "Inter", sans-serif;
+    background: #0f1419
+    }
+.tech-accent {
+    color: #37DCF2
+    }
+.tech-bg {
+    background-color: #162235
+    }
+.code-font {
+    font-family: "JetBrains Mono", monospace
+    }</style>
+<style>.material-icons {
+    width: 1em
+    }</style><style>.material-icons {
+    direction: rtl
+    }</style></head>
+<body>
+    <div class="ppt-slide tech-bg relative flex flex-col">
+        <!-- Subtle Grid Pattern -->
+        <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(#37DCF2 1px, transparent 1px), linear-gradient(90deg, #37DCF2 1px, transparent 1px);
+background-size: 50px 50px"></div>
+        
+        <!-- Header -->
+        <div class="relative z-10 h-[78px] px-[64px] flex items-center border-b border-white/10">
+            <div class="code-font text-sm text-[#37DCF2] mr-4">
+                <i class="material-icons text-base align-middle">storage</i>
+            </div>
+            <h1 class="text-[40px] font-bold text-white">Database Design</h1>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="relative z-10 flex-grow flex px-[64px] py-6">
+            <!-- Left Section - Description -->
+            <div class="w-[32%] pr-5 flex flex-col justify-center">
+                <div class="mb-3">
+                    <div class="flex items-center mb-2">
+                        <div class="w-1 h-8 bg-[#37DCF2] mr-3"></div>
+                        <span class="text-[#37DCF2] text-[16px] font-medium tracking-wide">DATA STRUCTURE</span>
+                    </div>
+                    <h2 class="text-white text-[26px] font-bold leading-tight">
+                        MongoDB Schema
+                    </h2>
+                </div>
+                
+                <div class="space-y-2 mb-3">
+                    <!-- Users -->
+                    <div class="bg-blue-500/10 border border-blue-400/30 rounded-lg p-2">
+                        <div class="flex items-center mb-1">
+                            <i class="material-icons text-blue-400 text-lg mr-2">person</i>
+                            <h3 class="text-blue-400 font-semibold text-[15px]">Users Collection</h3>
+                        </div>
+                        <p class="text-gray-300 text-[12px]">Authentication, roles, profile data</p>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="bg-yellow-500/10 border border-yellow-400/30 rounded-lg p-2">
+                        <div class="flex items-center mb-1">
+                            <i class="material-icons text-yellow-400 text-lg mr-2">task</i>
+                            <h3 class="text-yellow-400 font-semibold text-[15px]">Actions Collection</h3>
+                        </div>
+                        <p class="text-gray-300 text-[12px]">Tasks, priorities, status, participants</p>
+                    </div>
+
+                    <!-- Meetings -->
+                    <div class="bg-red-500/10 border border-red-400/30 rounded-lg p-2">
+                        <div class="flex items-center mb-1">
+                            <i class="material-icons text-red-400 text-lg mr-2">event</i>
+                            <h3 class="text-red-400 font-semibold text-[15px]">Meetings Collection</h3>
+                        </div>
+                        <p class="text-gray-300 text-[12px]">Scheduling, agenda, attendees</p>
+                    </div>
+
+                    <!-- Documents -->
+                    <div class="bg-green-500/10 border border-green-400/30 rounded-lg p-2">
+                        <div class="flex items-center mb-1">
+                            <i class="material-icons text-green-400 text-lg mr-2">description</i>
+                            <h3 class="text-green-400 font-semibold text-[15px]">Documents Collection</h3>
+                        </div>
+                        <p class="text-gray-300 text-[12px]">File storage, metadata, categories</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-[#37DCF2]/10 to-transparent border-l-4 border-[#37DCF2] p-3 rounded-lg">
+                    <p class="text-gray-300 text-[13px] leading-relaxed">
+                        <span class="text-[#37DCF2] font-semibold">NoSQL approach:</span> Flexible schema design with Mongoose ODM for data modeling and validation
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Right Section - Database Schema Image -->
+            <div class="w-[68%] pl-5 border-l border-white/10 flex flex-col justify-center items-center">
+                <img src="database_schema.png" alt="Database Schema" class="w-full h-[560px] object-contain rounded-xl" style="background: rgba(0,0,0,0.3); padding: 15px;"/>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

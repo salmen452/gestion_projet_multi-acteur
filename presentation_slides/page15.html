@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Challenges & Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .ppt-slide {
+                @apply relative w-[1280px] h-[720px] mx-auto box-border overflow-hidden
+            }
+        }
+    </style>
+    <style>body {
+    font-family: "Inter", sans-serif;
+    background: #0f1419
+    }
+.tech-accent {
+    color: #37DCF2
+    }
+.tech-bg {
+    background-color: #162235
+    }
+.code-font {
+    font-family: "JetBrains Mono", monospace
+    }</style>
+<style>.material-icons {
+    width: 1em
+    }</style><style>.material-icons {
+    direction: rtl
+    }</style></head>
+<body>
+    <div class="ppt-slide tech-bg relative flex flex-col">
+        <!-- Subtle Grid Pattern -->
+        <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(#37DCF2 1px, transparent 1px), linear-gradient(90deg, #37DCF2 1px, transparent 1px);
+background-size: 50px 50px"></div>
+        
+        <!-- Header -->
+        <div class="relative z-10 h-[78px] px-[64px] flex items-center border-b border-white/10">
+            <div class="code-font text-sm text-[#37DCF2] mr-4">
+                <i class="material-icons text-base align-middle">bug_report</i>
+            </div>
+            <h1 class="text-[40px] font-bold text-white">Challenges & Solutions</h1>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="relative z-10 flex-grow flex px-[64px] py-8">
+            <!-- Left Column - Challenges -->
+            <div class="w-1/2 pr-6 flex flex-col justify-center space-y-4">
+                <div class="flex items-center mb-1.5">
+                    <i class="material-icons text-red-400 text-2xl mr-2">warning</i>
+                    <h2 class="text-white text-[26px] font-semibold">Challenges Faced</h2>
+                </div>
+                
+                <!-- Technical Challenge -->
+                <div class="bg-white/5 backdrop-blur-sm border-l-4 border-red-400 rounded-xl p-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-red-400/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="material-icons text-red-400 text-xl">code</i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-white text-[22px] font-semibold mb-1.5">Technical</h3>
+                            <p class="text-gray-300 text-[20px] leading-relaxed">Learning new tech stack, API integration issues, database optimization challenges</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Organizational Challenge -->
+                <div class="bg-white/5 backdrop-blur-sm border-l-4 border-orange-400 rounded-xl p-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-orange-400/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="material-icons text-orange-400 text-xl">schedule</i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-white text-[22px] font-semibold mb-1.5">Organizational</h3>
+                            <p class="text-gray-300 text-[20px] leading-relaxed">Scope creep, changing requirements, deadline pressure, resource allocation</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Experience Challenge -->
+                <div class="bg-white/5 backdrop-blur-sm border-l-4 border-yellow-400 rounded-xl p-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-yellow-400/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="material-icons text-yellow-400 text-xl">psychology</i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-white text-[22px] font-semibold mb-1.5">User Experience</h3>
+                            <p class="text-gray-300 text-[20px] leading-relaxed">Design iterations, complex user flows, accessibility compliance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column - Solutions -->
+            <div class="w-1/2 pl-6 border-l border-white/10 flex flex-col justify-center space-y-4">
+                <div class="flex items-center mb-1.5">
+                    <i class="material-icons text-[#37DCF2] text-2xl mr-2">check_circle</i>
+                    <h2 class="text-white text-[26px] font-semibold">Implemented Solutions</h2>
+                </div>
+                
+                <!-- Technical Solutions -->
+                <div class="bg-gradient-to-br from-[#37DCF2]/10 to-transparent border border-[#37DCF2]/30 rounded-xl p-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="material-icons text-[#37DCF2] text-xl">lightbulb</i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-white text-[22px] font-semibold mb-1.5">Technical Solutions</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-[#37DCF2]/20 text-[#37DCF2] text-[19px] rounded-full">Documentation</span>
+                                <span class="px-3 py-1 bg-[#37DCF2]/20 text-[#37DCF2] text-[19px] rounded-full">Online Resources</span>
+                                <span class="px-3 py-1 bg-[#37DCF2]/20 text-[#37DCF2] text-[19px] rounded-full">Peer Support</span>
+                                <span class="px-3 py-1 bg-[#37DCF2]/20 text-[#37DCF2] text-[19px] rounded-full">Code Reviews</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Organizational Solutions -->
+                <div class="bg-gradient-to-br from-[#37DCF2]/10 to-transparent border border-[#37DCF2]/30 rounded-xl p-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="material-icons text-[#37DCF2] text-xl">task_alt</i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-white text-[22px] font-semibold mb-1.5">Organizational Solutions</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-[#37DCF2]/20 text-[#37DCF2] text-[19px] rounded-full">Prioritization</span>
+                                <span class="px-3 py-1 bg-[#37DCF2]/20 text-[#37DCF2] text-[19px] rounded-full">Timeboxing</span>
+                                <span class="px-3 py-1 bg-[#37DCF2]/20 text-[#37DCF2] text-[19px] rounded-full">Sprint Planning</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- UX Solutions -->
+                <div class="bg-gradient-to-br from-[#37DCF2]/10 to-transparent border border-[#37DCF2]/30 rounded-xl p-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="material-icons text-[#37DCF2] text-xl">palette</i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-white text-[22px] font-semibold mb-1.5">UX Solutions</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-[#37DCF2]/20 text-[#37DCF2] text-[19px] rounded-full">Prototyping</span>
+                                <span class="px-3 py-1 bg-[#37DCF2]/20 text-[#37DCF2] text-[19px] rounded-full">User Testing</span>
+                                <span class="px-3 py-1 bg-[#37DCF2]/20 text-[#37DCF2] text-[19px] rounded-full">Iterative Design</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Accent Line -->
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#37DCF2] via-white/30 to-[#37DCF2]"></div>
+    </div>
+</body>
+</html>

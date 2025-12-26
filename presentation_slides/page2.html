@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Company Presentation</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .ppt-slide {
+                @apply relative w-[1280px] min-h-[720px] mx-auto box-border overflow-hidden;
+            }
+        }
+    </style>
+
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background: #0f1419;
+        }
+        .tech-accent { color: #37DCF2; }
+        .tech-bg { background-color: #162235; }
+        .code-font { font-family: "JetBrains Mono", monospace; }
+        .material-icons { width: 1em; direction: rtl; }
+        
+    </style>
+</head>
+
+<body>
+<div class="ppt-slide tech-bg relative flex flex-col h-[720px]">
+
+    <!-- Subtle Grid Pattern -->
+    <div class="absolute inset-0 opacity-5"
+         style="background-image:
+         linear-gradient(#37DCF2 1px, transparent 1px),
+         linear-gradient(90deg, #37DCF2 1px, transparent 1px);
+         background-size: 50px 50px;">
+    </div>
+
+    <!-- Header -->
+    <div class="relative z-10 h-[85px] px-[70px] flex items-center border-b border-white/10">
+        <div class="code-font text-sm text-[#37DCF2] mr-4">
+            <i class="material-icons text-base align-middle">business</i>
+        </div>
+        <h1 class="text-[40px] font-bold text-white">Company Presentation</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 flex-grow flex px-[70px] py-10">
+
+        <!-- Left Section - Logo & Description -->
+        <div class="w-[48%] pr-10 flex flex-col justify-center">
+            
+            <!-- Logo -->
+            <div class="mb-6 flex justify-center">
+                <img src="DataDoIt%20logo.png" alt="DataDoIt Logo" class="w-[240px] h-auto drop-shadow-xl"/>
+            </div>
+
+            <!-- Company Name -->
+            <div class="text-center mb-6">
+                <p class="text-[#37DCF2] text-[24px] font-medium">Technology & Software Solutions</p>
+            </div>
+
+            <!-- About Us -->
+            <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-5">
+                <div class="flex items-center mb-3">
+                    <i class="material-icons text-[#37DCF2] mr-2">location_on</i>
+                    <h3 class="text-white text-[22px] font-semibold">About Us</h3>
+                </div>
+                <p class="text-gray-300 text-[20px] leading-relaxed mb-3">
+                    Tunisian tech company specializing in AI, data analytics, and smart space solutions.
+                </p>
+                <div class="flex items-center space-x-2 text-gray-400 text-[20px]">
+                    <i class="material-icons text-[#37DCF2]">calendar_today</i>
+                    <span>Founded in 2020</span>
+                </div>
+                <div class="flex items-center space-x-2 text-gray-400 text-[20px]">
+                    <i class="material-icons text-[#37DCF2]">place</i>
+                    <span>Technopole Manouba, Tunisia</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Section - Company Details -->
+        <div class="w-[52%] pl-10 border-l border-white/10 flex flex-col justify-center">
+
+            <!-- Services -->
+            <div class="mb-6">
+                <div class="flex items-center mb-4">
+                    <i class="material-icons text-[#37DCF2] mr-2">psychology</i>
+                    <h3 class="text-white text-[28px] font-semibold">Our Services / Expertise</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-[#37DCF2] rounded-full mt-2.5 flex-shrink-0"></div>
+                        <span class="text-gray-300 text-[22px]">AI & Machine Learning Solutions tailored to real-world data problems</span>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-[#37DCF2] rounded-full mt-2.5 flex-shrink-0"></div>
+                        <span class="text-gray-300 text-[22px]">Smart Analytics for spaces and intelligent environments</span>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-[#37DCF2] rounded-full mt-2.5 flex-shrink-0"></div>
+                        <span class="text-gray-300 text-[22px]">Custom data-driven software solutions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission & Vision -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-5">
+                    <div class="flex items-center mb-3">
+                        <i class="material-icons text-[#37DCF2] mr-2">rocket_launch</i>
+                        <h4 class="text-white text-[22px] font-semibold">Mission</h4>
+                    </div>
+                    <p class="text-gray-300 text-[20px] leading-snug">
+                        Empower organizations with data-driven intelligence and innovative AI-enabled technologies.
+                    </p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-5">
+                    <div class="flex items-center mb-3">
+                        <i class="material-icons text-[#37DCF2] mr-2">visibility</i>
+                        <h4 class="text-white text-[22px] font-semibold">Vision</h4>
+                    </div>
+                    <p class="text-gray-300 text-[20px] leading-snug">
+                        Transform physical spaces and business operations into strategic insights and smarter solutions.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bottom Accent Line -->
+    <div class="absolute bottom-0 left-0 w-full h-1
+         bg-gradient-to-r from-[#37DCF2] via-white/30 to-[#37DCF2]">
+    </div>
+
+</div>
+</body>
+</html>

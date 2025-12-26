@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Internship Context</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .ppt-slide {
+                @apply relative w-[1280px] h-[720px] mx-auto box-border overflow-hidden;
+            }
+        }
+    </style>
+
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background: #0f1419;
+        }
+        .tech-accent { color: #37DCF2; }
+        .tech-bg { background-color: #162235; }
+        .code-font { font-family: "JetBrains Mono", monospace; }
+        .material-icons { width: 1em; direction: rtl; }
+    </style>
+</head>
+
+<body>
+<div class="ppt-slide tech-bg relative flex flex-col">
+
+    <!-- Subtle Grid Pattern -->
+    <div class="absolute inset-0 opacity-5"
+         style="background-image:
+         linear-gradient(#37DCF2 1px, transparent 1px),
+         linear-gradient(90deg, #37DCF2 1px, transparent 1px);
+         background-size: 50px 50px;">
+    </div>
+
+    <!-- Header -->
+    <div class="relative z-10 h-[78px] px-[64px] flex items-center border-b border-white/10">
+        <div class="code-font text-sm text-[#37DCF2] mr-4">
+            <i class="material-icons text-base align-middle">work_outline</i>
+        </div>
+        <h1 class="text-[40px] font-bold text-white">Internship Context</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 flex-grow flex px-[64px] py-8">
+
+        <!-- Internship Overview -->
+        <div class="w-[45%] pr-8 flex flex-col justify-center space-y-6">
+            
+            <div class="mb-4">
+                <div class="flex items-center mb-4">
+                    <i class="material-icons text-[#37DCF2] mr-2">school</i>
+                    <h3 class="text-white text-[30px] font-semibold">Internship Overview</h3>
+                </div>
+                <p class="text-gray-300 text-[22px] leading-relaxed mb-4">
+                    Summer internship opportunity to gain practical experience in full-stack web development and project management systems.
+                </p>
+            </div>
+
+            <!-- Key Learning Areas -->
+            <div class="mb-4">
+                <div class="flex items-center mb-4">
+                    <i class="material-icons text-[#37DCF2] mr-2">psychology</i>
+                    <h3 class="text-white text-[26px] font-semibold">Key Learning Areas</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-[#37DCF2] rounded-full mt-2.5 flex-shrink-0"></div>
+                        <span class="text-gray-300 text-[22px]">Full-stack web development</span>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-[#37DCF2] rounded-full mt-2.5 flex-shrink-0"></div>
+                        <span class="text-gray-300 text-[22px]">Project management methodologies</span>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-[#37DCF2] rounded-full mt-2.5 flex-shrink-0"></div>
+                        <span class="text-gray-300 text-[22px]">Agile & Scrum practices</span>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-[#37DCF2] rounded-full mt-2.5 flex-shrink-0"></div>
+                        <span class="text-gray-300 text-[22px]">Team collaboration tools</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Section - Objectives & Context -->
+        <div class="w-[55%] pl-8 border-l border-white/10 flex flex-col justify-center space-y-6">
+
+            <!-- Objectives Card -->
+            <div class="mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="material-icons text-[#37DCF2] mr-2">flag</i>
+                    <h3 class="text-white text-[26px] font-semibold">Internship Objectives</h3>
+                </div>
+
+                <div class="space-y-3 pl-7 text-[22px] text-gray-300">
+                    <div>
+                        <span class="text-[#37DCF2] font-medium">01.</span>
+                        Build and ship a full-stack web application.
+                    </div>
+                    <div>
+                        <span class="text-[#37DCF2] font-medium">02.</span>
+                        Deliver a multi-stakeholder project management system.
+                    </div>
+                    <div>
+                        <span class="text-[#37DCF2] font-medium">03.</span>
+                        Work in an agile cadence with iterative releases.
+                    </div>
+                    <div>
+                        <span class="text-[#37DCF2] font-medium">04.</span>
+                        Gain hands-on experience across the modern web stack.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program Details (deduped from overview) -->
+            <div class="bg-gradient-to-br from-[#37DCF2]/10 to-transparent border border-[#37DCF2]/30 rounded-xl p-5">
+                <div class="flex items-center mb-3">
+                    <i class="material-icons text-[#37DCF2] mr-2">event</i>
+                    <h3 class="text-white text-[24px] font-semibold">Program Details</h3>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 text-[22px] text-gray-300">
+                    <div class="flex items-center">
+                        <div class="w-1.5 h-1.5 bg-[#37DCF2] rounded-full mr-3"></div>
+                        <span>Software Engineering Internship</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-1.5 h-1.5 bg-[#37DCF2] rounded-full mr-3"></div>
+                        <span>Full-Stack Web Development</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-1.5 h-1.5 bg-[#37DCF2] rounded-full mr-3"></div>
+                        <span>Multi-Stakeholder Projects</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-1.5 h-1.5 bg-[#37DCF2] rounded-full mr-3"></div>
+                        <span>2-month Duration (Summer 2024/2025)</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bottom Accent Line -->
+    <div class="absolute bottom-0 left-0 w-full h-1
+         bg-gradient-to-r from-[#37DCF2] via-white/30 to-[#37DCF2]">
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Development Approach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .ppt-slide {
+                @apply relative w-[1280px] min-h-[720px] mx-auto box-border overflow-hidden
+            }
+        }
+    </style>
+    <style>body {
+    font-family: "Inter", sans-serif;
+    background: #0f1419
+    }
+.tech-accent {
+    color: #37DCF2
+    }
+.tech-bg {
+    background-color: #162235
+    }
+.code-font {
+    font-family: "JetBrains Mono", monospace
+    }</style>
+<style>.material-icons {
+    width: 1em
+    }</style><style>.material-icons {
+    direction: rtl
+    }</style></head>
+<body>
+    <div class="ppt-slide tech-bg relative flex flex-col">
+        <!-- Subtle Grid Pattern -->
+        <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(#37DCF2 1px, transparent 1px), linear-gradient(90deg, #37DCF2 1px, transparent 1px);
+background-size: 50px 50px"></div>
+        
+        <!-- Header -->
+        <div class="relative z-10 h-[85px] px-[70px] flex items-center border-b border-white/10">
+            <div class="code-font text-sm text-[#37DCF2] mr-4">
+                <i class="material-icons text-base align-middle">settings</i>
+            </div>
+            <h1 class="text-[40px] font-bold text-white">Development Approach</h1>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="relative z-10 flex-grow flex px-[70px] py-12">
+            <!-- Left Section - Methodology Overview -->
+            <div class="w-[40%] pr-8 flex flex-col justify-center">
+                <div class="mb-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-1 h-8 bg-[#37DCF2] mr-3"></div>
+                        <span class="text-[#37DCF2] text-[20px] font-medium tracking-wide">METHODOLOGY</span>
+                    </div>
+                    <h2 class="text-white text-[36px] font-bold leading-tight mb-4">
+                        Iterative Development
+                    </h2>
+                    <p class="text-gray-300 text-[24px] leading-relaxed">
+                        Iterative development approach inspired by Agile principles with continuous feedback and incremental delivery
+                    </p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3 text-[24px] text-gray-300">
+                        <div class="w-2 h-2 bg-[#37DCF2] rounded-full"></div>
+                        <span>Incremental feature delivery</span>
+                    </div>
+                    <div class="flex items-center space-x-3 text-[24px] text-gray-300">
+                        <div class="w-2 h-2 bg-[#37DCF2] rounded-full"></div>
+                        <span>Regular testing and feedback</span>
+                    </div>
+                    <div class="flex items-center space-x-3 text-[24px] text-gray-300">
+                        <div class="w-2 h-2 bg-[#37DCF2] rounded-full"></div>
+                        <span>Continuous improvement</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Section - Agile Cycle -->
+            <div class="w-[60%] pl-8 border-l border-white/10 flex flex-col justify-center">
+                <div class="grid grid-cols-2 gap-5">
+                    <!-- Sprint Planning -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 relative">
+                        <div class="absolute top-3 right-3 text-[#37DCF2] font-bold text-[24px]">01</div>
+                        <div class="flex items-center mb-3">
+                            <div class="w-12 h-12 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center mr-3">
+                                <i class="material-icons text-[#37DCF2] text-xl">event_note</i>
+                            </div>
+                            <h3 class="text-white text-[22px] font-semibold">Sprint Planning</h3>
+                        </div>
+                        <p class="text-gray-300 text-[19px] leading-relaxed">Define sprint goals and allocate tasks</p>
+                    </div>
+                    
+                    <!-- Daily Stand-ups -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 relative">
+                        <div class="absolute top-3 right-3 text-[#37DCF2] font-bold text-[24px]">02</div>
+                        <div class="flex items-center mb-3">
+                            <div class="w-12 h-12 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center mr-3">
+                                <i class="material-icons text-[#37DCF2] text-xl">forum</i>
+                            </div>
+                            <h3 class="text-white text-[22px] font-semibold">Daily Stand-ups</h3>
+                        </div>
+                        <p class="text-gray-300 text-[19px] leading-relaxed">Track progress and discuss blockers</p>
+                    </div>
+                    
+                    <!-- Iterative Development -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 relative">
+                        <div class="absolute top-3 right-3 text-[#37DCF2] font-bold text-[24px]">03</div>
+                        <div class="flex items-center mb-3">
+                            <div class="w-12 h-12 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center mr-3">
+                                <i class="material-icons text-[#37DCF2] text-xl">code</i>
+                            </div>
+                            <h3 class="text-white text-[22px] font-semibold">Iterative Dev</h3>
+                        </div>
+                        <p class="text-gray-300 text-[19px] leading-relaxed">Build and test features incrementally</p>
+                    </div>
+                    
+                    <!-- Sprint Review -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 relative">
+                        <div class="absolute top-3 right-3 text-[#37DCF2] font-bold text-[24px]">04</div>
+                        <div class="flex items-center mb-3">
+                            <div class="w-12 h-12 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center mr-3">
+                                <i class="material-icons text-[#37DCF2] text-xl">task_alt</i>
+                            </div>
+                            <h3 class="text-white text-[22px] font-semibold">Sprint Review</h3>
+                        </div>
+                        <p class="text-gray-300 text-[19px] leading-relaxed">Demonstrate completed work and gather feedback</p>
+                    </div>
+                    
+                    <!-- Continuous Feedback -->
+                    <div class="col-span-2 bg-gradient-to-r from-[#37DCF2]/10 to-transparent border-l-4 border-[#37DCF2] p-5 rounded-xl">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <i class="material-icons text-[#37DCF2] text-2xl">sync</i>
+                                <span class="text-white text-[22px] font-semibold">Continuous Feedback Loop</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-[#37DCF2] text-[19px]">
+                                <i class="material-icons">arrow_forward</i>
+                                <i class="material-icons">arrow_forward</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Accent Line -->
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#37DCF2] via-white/30 to-[#37DCF2]"></div>
+    </div>
+</body>
+</html>

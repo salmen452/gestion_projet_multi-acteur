@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Main Functionalities</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .ppt-slide {
+                @apply relative w-[1280px] min-h-[720px] mx-auto box-border overflow-hidden
+            }
+        }
+    </style>
+    <style>body {
+    font-family: "Inter", sans-serif;
+    background: #0f1419
+    }
+.tech-accent {
+    color: #37DCF2
+    }
+.tech-bg {
+    background-color: #162235
+    }
+.code-font {
+    font-family: "JetBrains Mono", monospace
+    }</style>
+<style>.material-icons {
+    width: 1em
+    }</style><style>.material-icons {
+    direction: rtl
+    }</style></head>
+<body>
+    <div class="ppt-slide tech-bg relative flex flex-col">
+        <!-- Subtle Grid Pattern -->
+        <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(#37DCF2 1px, transparent 1px), linear-gradient(90deg, #37DCF2 1px, transparent 1px);
+background-size: 50px 50px"></div>
+        
+        <!-- Header -->
+        <div class="relative z-10 h-[85px] px-[70px] flex items-center border-b border-white/10">
+            <div class="code-font text-sm text-[#37DCF2] mr-4">
+                <i class="material-icons text-base align-middle">widgets</i>
+            </div>
+            <h1 class="text-[40px] font-bold text-white">Main Functionalities</h1>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="relative z-10 flex-grow flex px-[70px] py-10">
+            <!-- Left Section - Functionalities Grid -->
+            <div class="w-[60%] pr-8 flex flex-col justify-center">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <!-- User Management -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-11 h-11 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="material-icons text-[#37DCF2] text-2xl">people</i>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-white text-[24px] font-semibold mb-1">User Management</h3>
+                                <p class="text-gray-400 text-[20px]">Role-based access, authentication</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action & Project Tracking -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-11 h-11 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="material-icons text-[#37DCF2] text-2xl">assignment_turned_in</i>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-white text-[24px] font-semibold mb-1">Project Tracking</h3>
+                                <p class="text-gray-400 text-[20px]">Task assignments, progress monitoring</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Meeting Management -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-11 h-11 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="material-icons text-[#37DCF2] text-2xl">event</i>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-white text-[24px] font-semibold mb-1">Meeting Management</h3>
+                                <p class="text-gray-400 text-[20px]">Scheduling, agenda, minutes</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Document Management -->
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-11 h-11 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="material-icons text-[#37DCF2] text-2xl">folder_open</i>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-white text-[24px] font-semibold mb-1">Document Management</h3>
+                                <p class="text-gray-400 text-[20px]">File sharing, upload/download</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistics Dashboard - Larger card -->
+                <div class="bg-gradient-to-r from-[#37DCF2]/10 to-transparent border-l-4 border-[#37DCF2] rounded-xl p-5">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-[#37DCF2]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="material-icons text-[#37DCF2] text-2xl">analytics</i>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex items-center mb-2">
+                                <h3 class="text-white text-[26px] font-semibold">Statistics Dashboard</h3>
+                            </div>
+                            <p class="text-gray-300 text-[22px]">Real-time analytics, action tracking, user activity statistics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Section - Dashboard Preview -->
+            <div class="w-[40%] pl-8 border-l border-white/10 flex flex-col justify-center">
+                <div class="mb-3">
+                    <h3 class="text-white text-[22px] font-semibold mb-1">Dashboard Interface</h3>
+                    <p class="text-gray-400 text-[20px]">Real-time project insights</p>
+                </div>
+                <img src="Capture d'écran 2025-07-17 134018.png" alt="Dashboard Preview" class="w-full h-[420px] object-contain rounded-xl shadow-2xl"/>
+            </div>
+        </div>
+        
+        <!-- Bottom Accent Line -->
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#37DCF2] via-white/30 to-[#37DCF2]"></div>
+    </div>
+</body>
+</html>
